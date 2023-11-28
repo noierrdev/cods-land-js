@@ -17,6 +17,10 @@ const EventSchema=new schema({
     },
     location:{
         type:String
+    },
+    logo:{
+        type:Object,
+        default:null
     }
 },
 {

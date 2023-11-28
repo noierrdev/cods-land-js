@@ -4,6 +4,9 @@ const http=require('http')
 const cors=require('cors');
 const bodyParser=require('body-parser');
 
+const multer=require('multer')
+const storage = multer.memoryStorage();
+
 require('./configs/database')();
 
 const app=express();
@@ -16,6 +19,9 @@ app.use(bodyParser.json());
 
 // Middleware to parse URL-encoded data
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Set up multer for handling file uploads
+global.upload = multer({ storage: storage });
 
 app.use(require('./middlewares/auth.middleware'))
 

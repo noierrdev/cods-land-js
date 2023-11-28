@@ -24,7 +24,8 @@ const UserSchema=new schema({
         type:String
     },
     avatar:{
-        type:Object
+        type:Object,
+        default:null
     },
     password:{
         type:String

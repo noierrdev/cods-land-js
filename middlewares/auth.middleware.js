@@ -8,12 +8,13 @@ module.exports=async (req,res,next)=>{
     try {
         const tokenDetail=jwt.verify(token,process.env.AUTH_KEY);
         const gotUser=await models.User.findById(gotToken.user);
+        if(!gotUser.verified) return next();
+        if(!gotUser.allow) return next();
         req.userId=gotUser._id;
         req.email=gotUser.email;
         req.fullname=gotUser.fullname;
         return next();
     } catch (error) {
-        console.log(error)
         return next()
     }
 }

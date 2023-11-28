@@ -33,7 +33,9 @@ exports.signin=async (req,res)=>{
     if(!gotUser.comparePassword(req.body.password)) return res.json({status:"error",error:"WRONG_PASSWORD"});
     if(!gotUser.verified) return res.json({status:"error",error:"NOT_VERIFIED_USER"});
     const gotToken=await models.Token.findOne({user:gotUser._id});
+    //delete existing token
     if(gotToken) await models.Token.findByIdAndDelete(gotToken._id);
+    //prepare for a new token
     const tokenDetail={
         email:gotUser.email
     };
@@ -50,12 +52,14 @@ exports.signin=async (req,res)=>{
     }}))
     .catch((e)=>res.json({status:"error",error:e}))
 }
+
 exports.signout=(req,res)=>{
     const token=req.headers.token;
     models.Token.deleteOne({token:token})
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:e}))
 }
+
 exports.verify=(req,res)=>{
     if(req.userId)
     return res.json({
