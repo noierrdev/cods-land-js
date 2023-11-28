@@ -8,7 +8,8 @@ const UserSchema=new schema({
         type:String
     },
     email:{
-        type:String
+        type:String,
+        unique:true
     },
     gender:{
         type:String
@@ -29,36 +30,44 @@ const UserSchema=new schema({
         type:String
     },
     otp:{
-        type:Number
+        type:Number,
+        default:null
     },
     verified:{
-        type:Boolean
+        type:Boolean,
+        default:false
+    },
+    allow:{
+        type:Boolean,
+        default:true
     }
 },
 {
     timestamps: true,
 });
-UserSchema.pre('save',async (next)=>{
+
+UserSchema.pre('save', function(next){
     const user = this;
     // Hash the password only if it's modified or new
-    if (!user.isModified('password')) return next();
+    // if (!user.isModified('password')) return next();
     try {
     // Generate a salt and hash the password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(user.password, salt);
-
-    // Set the hashed password back to the user object
-    user.password = hashedPassword;
-    next();
+        const salt =bcrypt.genSaltSync(10);
+        
+        const hashedPassword =bcrypt.hashSync(user.password, salt);
+        
+        // Set the hashed password back to the user object
+        user.password = hashedPassword;
+        next();
     } catch (error) {
-    return next(error);
+        return next(error);
     }
 })
 
-UserSchema.methods.comparePassword = async function(candidatePassword) {
+UserSchema.methods.comparePassword =  function(candidatePassword) {
     try {
       // Use bcrypt to compare the candidate password with the hashed password
-      return await bcrypt.compare(candidatePassword, this.password);
+      return bcrypt.compareSync(candidatePassword, this.password);
     } catch (error) {
       throw error;
     }

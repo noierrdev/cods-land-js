@@ -17,6 +17,8 @@ app.use(bodyParser.json());
 // Middleware to parse URL-encoded data
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(require('./middlewares/auth.middleware'))
+
 app.use(`/${process.env.BASE_URL}`,require('./routers'));
 
 const server=http.createServer(app);
