@@ -39,7 +39,7 @@ exports.signin=async (req,res)=>{
     const tokenDetail={
         email:gotUser.email
     };
-    const tokenEncoded=jwt.sign(tokenDetail,process.env.AUTH_KEY,{expiresIn:60*parseInt(process.env.JWT_PERIOD)});
+    const tokenEncoded=jwt.sign(tokenDetail,process.env.AUTH_KEY,);
     const newToken=new models.Token({
         user:gotUser._id,
         token:tokenEncoded

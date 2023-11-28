@@ -41,6 +41,10 @@ const UserSchema=new schema({
     allow:{
         type:Boolean,
         default:true
+    },
+    phonenumber:{
+        type:String,
+        default:""
     }
 },
 {

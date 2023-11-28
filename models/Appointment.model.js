@@ -9,14 +9,20 @@ const AppointmentSchema=new schema({
     },
     type:{
         type:schema.ObjectId,
-        ref:"AppointmentType"
+        ref:"AppointmentType",
+        default:null
     },
     event:{
         type:schema.ObjectId,
-        ref:"Event"
+        ref:"Event",
+        default:null
     },
     time:{
         type:String
+    },
+    status:{
+        type:String,
+        default:"pending"
     }
 },
 {
