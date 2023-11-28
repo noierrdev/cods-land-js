@@ -3,7 +3,7 @@ const mongoose=require('mongoose')
 const schema=mongoose.Schema;
 
 const AppointmentTypeSchema=new schema({
-    name:{
+    title:{
         type:String
     },
     price:{
