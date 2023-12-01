@@ -7,6 +7,10 @@ const NotificationSchema=new schema({
         type:schema.ObjectId,
         ref:"User"
     },
+    to:{
+        type:schema.ObjectId,
+        ref:"User"
+    },
     type:{
         type:String,
         default:"follow"

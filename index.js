@@ -11,8 +11,14 @@ require('./configs/database')();
 
 const app=express();
 
-// Enable CORS for all routes
-app.use(cors());
+const corsOptions = {
+    origin: 'http://localhost:3000', // Replace with your allowed origin
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Enable cookies and HTTP authentication headers
+    optionsSuccessStatus: 204, // Respond with 204 No Content for preflight requests
+};
+  
+app.use(cors(corsOptions));
 
 // Middleware to parse JSON data
 app.use(bodyParser.json());
