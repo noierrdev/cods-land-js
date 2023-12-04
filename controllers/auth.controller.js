@@ -93,7 +93,7 @@ exports.forgotPassword=async (req,res)=>{
     .then(()=>{
         let defaultClient = brevo.ApiClient.instance;
         let apiKey = defaultClient.authentications['api-key'];
-        apiKey.apiKey = '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';
+        apiKey.apiKey = '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';
         let apiInstance = new brevo.TransactionalEmailsApi();
         let sendSmtpEmail = new brevo.SendSmtpEmail();
         sendSmtpEmail.subject = "Forgot Password";
@@ -140,4 +140,10 @@ exports.resetPassword=async (req,res)=>{
         .catch(e=>res.json({status:"error",error:e})) 
     })
     .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.verifyOTP=async (req,res)=>{
+    const otp=req.body.otp;
+    const gotToken=await models.Token.findOne({otp:otp});
+    if(!gotToken) return res.json({status:"error"})
 }
