@@ -145,5 +145,7 @@ exports.resetPassword=async (req,res)=>{
 exports.verifyOTP=async (req,res)=>{
     const otp=req.body.otp;
     const gotToken=await models.Token.findOne({otp:otp});
-    if(!gotToken) return res.json({status:"error"})
+    if(!gotToken) return res.json({status:"error",error:"NO_TOKEN"});
+    if((Date.now()-gotToken.lastactive)>(60*1000*process.env.JWT_PERIOD)) return res.json({ status: "error",error:"EXPIRED" });
+    return res.json({status:"success"})
 }
