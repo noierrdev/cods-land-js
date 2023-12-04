@@ -1,6 +1,6 @@
 const models=require('../models');
 const jwt=require('jsonwebtoken');
-
+const brevo=require('@getbrevo/brevo')
 exports.signup=async (req,res)=>{
     try {
         const gotUser=await models.User.findOne({email:req.body.email});
@@ -12,7 +12,8 @@ exports.signup=async (req,res)=>{
             birthday:req.body.birthday,
             city:req.body.city,
             country:req.body.country,
-            password:req.body.password, 
+            password:req.body.password,
+            avatar:req.files?req.files.upload:null
         })
         newUser.save()
         .then(()=>{
@@ -71,4 +72,72 @@ exports.verify=(req,res)=>{
         }
     });
     else return res.json({status:"error",data:"AUTH_ERROR"})
+}
+
+exports.forgotPassword=async (req,res)=>{
+    const email=req.body.email;
+    const gotUser=await models.User.findOne({email:email}).lean().exec();
+    if(!gotUser) return res.json({status:"error",error:"NO_USER"})
+    await models.Token.deleteMany({user:gotUser.id});
+    const tokenDetail={
+        email:gotUser.email
+    };
+    const tokenEncoded=jwt.sign(tokenDetail,process.env.AUTH_KEY,);
+    const otp=String(parseInt(Math.random()*10))+String(parseInt(Math.random()*10))+String(parseInt(Math.random()*10))+String(parseInt(Math.random()*10))
+    const newToken=new models.Token({
+        user:gotUser._id,
+        token:tokenEncoded,
+        otp:otp
+    });
+    newToken.save()
+    .then(()=>{
+        let defaultClient = brevo.ApiClient.instance;
+        let apiKey = defaultClient.authentications['api-key'];
+        apiKey.apiKey = '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';
+        let apiInstance = new brevo.TransactionalEmailsApi();
+        let sendSmtpEmail = new brevo.SendSmtpEmail();
+        sendSmtpEmail.subject = "Forgot Password";
+        sendSmtpEmail.htmlContent = `
+        <html>
+            <body>
+                <h2>Following OTP code is valid for ${process.env.JWT_PERIOD} minutes.</h2>
+                <h1>
+                    ${otp}
+                </h1>
+            </body>
+        </html>`;
+        sendSmtpEmail.sender = { "name": "Cods.Land", "email": "support@codsland.com" };
+        sendSmtpEmail.to = [
+
+            {
+            "email": email, "name": gotUser.fullname
+            }
+        ];
+        sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+        sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" };
+
+
+        apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+            return res.json({ status: "success", data: data });
+        }, function (error) {
+            return res.json({ status: "error",error:"EMAIL_ERROR" });
+        });
+    })
+    .catch((e)=>res.json({status:"error",error:e}))
+};
+exports.resetPassword=async (req,res)=>{
+    const otp=req.body.otp;
+    const password=req.body.password;
+    const gotToken=await models.Token.findOne({otp:otp}).populate('user','fullname');
+    if(!gotToken) return res.json({ status: "error",error:"INVALID_OTP" });
+    if((Date.now()-gotToken.lastactive)>(60*1000*process.env.JWT_PERIOD)) return res.json({ status: "error",error:"EXPIRED" });
+    models.User.findById(gotToken.user._id)
+    .then(async (gotUser)=>{
+        gotUser.password=password;
+        await models.Token.deleteMany({user:gotUser._id});
+        gotUser.save()
+        .then(()=>res.json({status:"success"}))
+        .catch(e=>res.json({status:"error",error:e})) 
+    })
+    .catch(e=>res.json({status:"error",error:e}))
 }

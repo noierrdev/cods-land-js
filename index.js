@@ -7,6 +7,8 @@ const bodyParser=require('body-parser');
 const multer=require('multer')
 const storage = multer.memoryStorage();
 
+const fileUpload=require('express-fileupload');
+
 require('./configs/database')();
 
 const app=express();
@@ -27,8 +29,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set up multer for handling file uploads
-global.upload = multer({ storage: storage });
-
+// global.upload = multer({ storage: storage });
+app.use(fileUpload())
 app.use(require('./middlewares/auth.middleware'))
 
 app.use(`/${process.env.BASE_URL}`,require('./routers'));

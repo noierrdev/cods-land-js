@@ -10,6 +10,9 @@ const TokenSchema=new schema({
     token:{
         type:String
     },
+    otp:{
+        type:String
+    },
     lastactive:{
         type:Date,
         default:Date.now
