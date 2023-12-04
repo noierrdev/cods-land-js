@@ -20,7 +20,7 @@ const corsOptions = {
     optionsSuccessStatus: 204, // Respond with 204 No Content for preflight requests
 };
   
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Middleware to parse JSON data
 app.use(bodyParser.json());
