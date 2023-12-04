@@ -93,7 +93,7 @@ exports.forgotPassword=async (req,res)=>{
     .then(()=>{
         let defaultClient = brevo.ApiClient.instance;
         let apiKey = defaultClient.authentications['api-key'];
-        apiKey.apiKey = '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';
+        apiKey.apiKey = process.env.BREVO_KEY;
         let apiInstance = new brevo.TransactionalEmailsApi();
         let sendSmtpEmail = new brevo.SendSmtpEmail();
         sendSmtpEmail.subject = "Forgot Password";
@@ -106,7 +106,7 @@ exports.forgotPassword=async (req,res)=>{
                 </h1>
             </body>
         </html>`;
-        sendSmtpEmail.sender = { "name": "Cods.Land", "email": "support@codsland.com" };
+        sendSmtpEmail.sender = { "name": "Cods.Land", "email": "noierrdev@gmail.com" };
         sendSmtpEmail.to = [
 
             {
