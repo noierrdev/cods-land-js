@@ -120,7 +120,7 @@ exports.forgotPassword=async (req,res)=>{
         apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
             return res.json({ status: "success", data: data });
         }, function (error) {
-            return res.json({ status: "error",error:"EMAIL_ERROR" });
+            return res.json({ status: "error",error:error });
         });
     })
     .catch((e)=>res.json({status:"error",error:e}))
