@@ -91,37 +91,38 @@ exports.forgotPassword=async (req,res)=>{
     });
     newToken.save()
     .then(()=>{
-        let defaultClient = brevo.ApiClient.instance;
-        let apiKey = defaultClient.authentications['api-key'];
-        apiKey.apiKey = process.env.BREVO_KEY;
-        let apiInstance = new brevo.TransactionalEmailsApi();
-        let sendSmtpEmail = new brevo.SendSmtpEmail();
-        sendSmtpEmail.subject = "Forgot Password";
-        sendSmtpEmail.htmlContent = `
-        <html>
-            <body>
-                <h2>Following OTP code is valid for ${process.env.JWT_PERIOD} minutes.</h2>
-                <h1>
-                    ${otp}
-                </h1>
-            </body>
-        </html>`;
-        sendSmtpEmail.sender = { "name": "Cods.Land", "email": "noierrdev@gmail.com" };
-        sendSmtpEmail.to = [
+        return res.json({status:"success",data:otp})
+        // let defaultClient = brevo.ApiClient.instance;
+        // let apiKey = defaultClient.authentications['api-key'];
+        // apiKey.apiKey = process.env.BREVO_KEY;
+        // let apiInstance = new brevo.TransactionalEmailsApi();
+        // let sendSmtpEmail = new brevo.SendSmtpEmail();
+        // sendSmtpEmail.subject = "Forgot Password";
+        // sendSmtpEmail.htmlContent = `
+        // <html>
+        //     <body>
+        //         <h2>Following OTP code is valid for ${process.env.JWT_PERIOD} minutes.</h2>
+        //         <h1>
+        //             ${otp}
+        //         </h1>
+        //     </body>
+        // </html>`;
+        // sendSmtpEmail.sender = { "name": "Cods.Land", "email": "noierrdev@gmail.com" };
+        // sendSmtpEmail.to = [
 
-            {
-            "email": email, "name": gotUser.fullname
-            }
-        ];
-        sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
-        sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" };
+        //     {
+        //     "email": email, "name": gotUser.fullname
+        //     }
+        // ];
+        // sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+        // sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" };
 
 
-        apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
-            return res.json({ status: "success", data: data });
-        }, function (error) {
-            return res.json({ status: "error",error:error });
-        });
+        // apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+        //     return res.json({ status: "success", data: data });
+        // }, function (error) {
+        //     return res.json({ status: "error",error:error });
+        // });
     })
     .catch((e)=>res.json({status:"error",error:e}))
 };
