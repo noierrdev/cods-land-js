@@ -22,7 +22,7 @@ exports.allEvents=(req,res)=>{
 }
 
 exports.saveAppointmentType=(req,res)=>{
-    if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
+    // if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
     const newAppointmentType=new models.AppointmentType({
         title:req.body.title,
         price:req.body.price,
@@ -34,7 +34,7 @@ exports.saveAppointmentType=(req,res)=>{
 }
 
 exports.allAppointmentTypes=(req,res)=>{
-    if(!req.userId) return  res.json({status:"error",data:"AUTH_ERROR"});
+    // if(!req.userId) return  res.json({status:"error",data:"AUTH_ERROR"});
     models.AppointmentType.find({},{title:1,price:1,start:1,length:1})
     .then(gotAppointmentTypes=>res.json({status:"success",data:gotAppointmentTypes}))
     .catch(e=>res.json({status:'error',error:"DB_ERROR"}))
@@ -57,4 +57,30 @@ exports.saveAppointment=async (req,res)=>{
     newAppointment.save()
     .then(()=>res.json({status:"success"}))
     .catch((e)=>res.json({status:"error",error:"SAVE_FAILED"}));
+}
+
+exports.getAppointment=async (req,res)=>{
+    if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
+    const appointmentId=req.params.id;
+    const gotAppointment=await models.Appointment.findById(appointmentId).populate('type event');
+    if(!gotAppointment) return res.json({status:"error",error:"NO_APPOINTMENT"})
+    return res.json({status:"success",data:gotAppointment});
+}
+
+exports.pageAppointment=(req,res)=>{
+    if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
+    const page= req.body.page;
+    const pagesize= req.body.pagesize;
+    models.Appointment.find({user:req.userId}).skip(pagesize*page).limit(pagesize)
+    .then(gotAppointments=>{
+        return res.json({status:"success",data:gotAppointments})
+    })
+    .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
+}
+exports.completeAppointment=(req,res)=>{
+    if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
+    if(!req.superadmin) return res.json({status:"error",error:"ACCESS_DENIED"});
+    models.Appointment.findByIdAndUpdate(req.params.id,{
+
+    })
 }
