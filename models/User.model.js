@@ -36,7 +36,7 @@ const UserSchema=new schema({
     },
     verified:{
         type:Boolean,
-        default:false
+        default:true
     },
     allow:{
         type:Boolean,

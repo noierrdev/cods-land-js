@@ -20,6 +20,12 @@ const AppointmentSchema=new schema({
     time:{
         type:Date
     },
+    from:{
+        type:Date
+    },
+    to:{
+        type:Date
+    },
     status:{
         type:String,
         default:"pending"
