@@ -9,11 +9,36 @@ const MemberSchema=new schema({
     type:{
         type:String
     },
+    fullname:{
+        type:String
+    },
+    birthday:{
+        type:String
+    },
+    email:{
+        type:String
+    },
+    phonenumber:{
+        type:String
+    },
+    gender:{
+        type:String
+    },
+    billing:{
+        type:String
+    },
+    shipping:{
+        type:String
+    },
     allow:{
-        type:Boolean
+        type:Boolean,
+        default:true
     },
     creditcard:{
         type:String
+    },
+    expired:{
+        type:Date,
     }
 },{
     timestamps:true

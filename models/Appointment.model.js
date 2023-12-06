@@ -17,6 +17,17 @@ const AppointmentSchema=new schema({
     //     ref:"Event",
     //     default:null
     // },
+    year:{
+        type:Number,
+        default:2023
+    },
+    month:{
+        type:Number,
+        default:12
+    },
+    day:{
+        type:Number
+    },
     time:{
         type:Date
     },
@@ -34,5 +45,6 @@ const AppointmentSchema=new schema({
 {
     timestamps: true,
 });
+
 const Appointment=mongoose.model('Appointment',AppointmentSchema)
 module.exports=Appointment;
