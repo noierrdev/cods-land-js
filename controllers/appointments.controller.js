@@ -46,7 +46,9 @@ exports.saveAppointment=async (req,res)=>{
     if(!gotEvent) return res.json({status:"error",data:"NO_EVENT"});
     const gotAppointmentType=await models.Event.findById(req.body.appointmenttype);
     if(!gotAppointmentType) return res.json({status:"error",data:"NO_APPOINTMENTTYPE"});
+    
     const alreayExist=await models.Appointment.findOne({time:req.body.time});
+
     if(alreayExist) return res.json({status:"error",error:"ALREADY_OCCUPIED"})
     const newAppointment=new models.Appointment({
         user:req.userId,

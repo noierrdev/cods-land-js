@@ -1,7 +1,7 @@
 const mongoose =require('mongoose')
 const schema=mongoose.Schema;
 
-const FriendshipSchema=new schema({
+const FriendSchema=new schema({
     from:{
         type:schema.ObjectId,
         ref:"User"
@@ -18,5 +18,5 @@ const FriendshipSchema=new schema({
     timestamps:true
 });
 
-const Friendship=mongoose.model('Friendship',FriendshipSchema);
-module.exports=Friendship;
+const Friend=mongoose.model('Friend',FriendSchema);
+module.exports=Friend;

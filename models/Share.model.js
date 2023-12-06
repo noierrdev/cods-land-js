@@ -1,4 +1,4 @@
-const mongoose=require('mongoose')
+const mongoose=require('mongoose');
 const schema=mongoose.Schema;
 
 const ShareSchema=new schema({
@@ -12,4 +12,6 @@ const ShareSchema=new schema({
     },
 },{
     timestamps:true
-})
+});
+const Share=mongoose.model('Share',ShareSchema)
+module.exports=Share;

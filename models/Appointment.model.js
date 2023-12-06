@@ -12,13 +12,13 @@ const AppointmentSchema=new schema({
         ref:"AppointmentType",
         default:null
     },
-    event:{
-        type:schema.ObjectId,
-        ref:"Event",
-        default:null
-    },
+    // event:{
+    //     type:schema.ObjectId,
+    //     ref:"Event",
+    //     default:null
+    // },
     time:{
-        type:String
+        type:Date
     },
     status:{
         type:String,

@@ -5,14 +5,14 @@ const AppointmentType=require('./AppointmentType.model');
 const Token=require('./Token.mode')
 const Notification=require('./Notification.model')
 const Following=require('./Following.model')
-const Friendship=require('./Friendship.model')
+const Friend=require('./Friend.model')
 const UserGroup=require('./UserGroup.model');
 const UserGroupMember=require('./UserGroupMember.model');
 const SharedContent=require('./SharedContent.model');
 const Share=require('./Share.model');
 const Like=require("./Like.model");
 const SharedContentCategory=require('./SharedContentCategory')
-
+const Member=require('./Member.model')
 module.exports={
     User,
     Event,
@@ -21,11 +21,12 @@ module.exports={
     Token,
     Following,
     Notification,
-    Friendship,
+    Friend,
     UserGroup,
     UserGroupMember,
     SharedContent,
     SharedContentCategory,
     Share,
-    Like
+    Like,
+    Member
 }
