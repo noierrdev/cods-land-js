@@ -28,7 +28,7 @@ exports.signup=async (req,res)=>{
 }
 
 exports.signin=async (req,res)=>{
-    const gotUser=await models.User.findOne({email:req.body.email},{fullname:1,_id:1,email:1});
+    const gotUser=await models.User.findOne({email:req.body.email},{fullname:1,_id:1,email:1,allow:1,verified:1});
     if(!gotUser) return res.json({status:"error",error:"NO_USER"});
     if(!gotUser.allow) return res.json({status:"error",error:"BLOCKED_USER"});
     if(!gotUser.comparePassword(req.body.password)) return res.json({status:"error",error:"WRONG_PASSWORD"});
