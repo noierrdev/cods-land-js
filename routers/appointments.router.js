@@ -6,6 +6,6 @@ router.post('/appointment-types/save',appointmentsController.saveAppointmentType
 router.get('/appointment-types/',appointmentsController.allAppointmentTypes);
 
 router.post('/save',appointmentsController.saveAppointment);
-router.get('/{id}',appointmentsController.getAppointment)
+router.get('/:id',appointmentsController.getAppointment)
 
 module.exports=router;

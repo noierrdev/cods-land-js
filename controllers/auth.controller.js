@@ -3,7 +3,7 @@ const jwt=require('jsonwebtoken');
 const brevo=require('@getbrevo/brevo')
 exports.signup=async (req,res)=>{
     try {
-        const gotUser=await models.User.findOne({email:req.body.email});
+        const gotUser=await models.User.findOne({email:req.body.email},{fullname:1,_id:1,email:1});
         if(gotUser) return res.json({status:"error",error:"ALREADY_EXIST"});
         const newUser=new models.User({
             fullname:req.body.fullname,
@@ -28,7 +28,7 @@ exports.signup=async (req,res)=>{
 }
 
 exports.signin=async (req,res)=>{
-    const gotUser=await models.User.findOne({email:req.body.email});
+    const gotUser=await models.User.findOne({email:req.body.email},{fullname:1,_id:1,email:1});
     if(!gotUser) return res.json({status:"error",error:"NO_USER"});
     if(!gotUser.allow) return res.json({status:"error",error:"BLOCKED_USER"});
     if(!gotUser.comparePassword(req.body.password)) return res.json({status:"error",error:"WRONG_PASSWORD"});
@@ -76,7 +76,7 @@ exports.verify=(req,res)=>{
 
 exports.forgotPassword=async (req,res)=>{
     const email=req.body.email;
-    const gotUser=await models.User.findOne({email:email}).lean().exec();
+    const gotUser=await models.User.findOne({email:email},{fullname:1,_id:1,email:1}).lean().exec();
     if(!gotUser) return res.json({status:"error",error:"NO_USER"})
     await models.Token.deleteMany({user:gotUser.id});
     const tokenDetail={
@@ -149,4 +149,12 @@ exports.verifyOTP=async (req,res)=>{
     if(!gotToken) return res.json({status:"error",error:"NO_TOKEN"});
     if((Date.now()-gotToken.lastactive)>(60*1000*process.env.JWT_PERIOD)) return res.json({ status: "error",error:"EXPIRED" });
     return res.json({status:"success"})
+}
+exports.avatarFromEmail=(req,res)=>{
+    models.User.findOne({email:req.params.email},{avatar:1})
+    .then(gotUser=>{
+        if(!gotUser) return res.json({status:"error",error:"NO_USER"});
+        if(!gotUser.avatar) return res.json({status:"error",error:"NO_AVATAR"});
+        return res.setHeader("Content-Type",gotUser.avatar.mimetype).send(gotUser.avatar.data.buffer);
+    })
 }
