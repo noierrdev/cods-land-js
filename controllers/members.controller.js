@@ -33,3 +33,11 @@ exports.updateMember=(req,res)=>{
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
+
+exports.deleteMember=(req,res)=>{
+    if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
+    if(!req.superuser) return res.json({status:"error",error:"ACCESS_DENIED"})
+    models.Member.findByIdAndRemove(req.params.id)
+    .then(()=>res.json({status:"success"}))
+    .catch((e)=>res.json({status:'error',error:e}))
+}
