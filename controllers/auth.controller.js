@@ -1,6 +1,7 @@
 const models=require('../models');
 const jwt=require('jsonwebtoken');
-const brevo=require('@getbrevo/brevo')
+const brevo=require('@getbrevo/brevo');
+const path=require('path')
 exports.signup=async (req,res)=>{
     try {
         const gotUser=await models.User.findOne({email:req.body.email},{fullname:1,_id:1,email:1});
@@ -154,7 +155,7 @@ exports.avatarFromEmail=(req,res)=>{
     models.User.findOne({email:req.params.email},{avatar:1})
     .then(gotUser=>{
         if(!gotUser) return res.json({status:"error",error:"NO_USER"});
-        if(!gotUser.avatar) return res.json({status:"error",error:"NO_AVATAR"});
+        if(!gotUser.avatar) return res.setHeader("Content-Type","image/png").sendFile(path.resolve(__dirname,"../static/images/default.png"))
         return res.setHeader("Content-Type",gotUser.avatar.mimetype).send(gotUser.avatar.data.buffer);
     })
 }
