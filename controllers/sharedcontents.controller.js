@@ -5,35 +5,36 @@ exports.saveContent=(req,res)=>{
     const title=req.body.title;
     const description=req.body.description;
     const type=req.body.type;
-    const uploading=req.file.upload;
+    const uploading=req.files&&req.files.upload;
     const content=req.body.content;
     const author=req.userId;
-    return console.log(req.file.upload)
+    const category=req.body.category;
     const newSharedContent=new models.SharedContent({
+        category:category,
         title:title,
         description:description,
         content:content,
         type:type,
         media:{
-            name:uploading.filename,
-            size:uploading.length
+            name:uploading&&uploading.filename,
+            size:uploading&&uploading.length
         },
         author:author
     });
     newSharedContent.save()
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
-}
+};
 
 exports.getContent=(req,res)=>{
     const contentId=req.params.id;
-    models.SharedContent.findById(contentId)
+    models.SharedContent.findById(contentId).populate('category author','title fullname')
     .then(gotContent=>res.json({status:"success",data:gotContent}))
     .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
 }
 
 exports.deleteContent= (req,res)=>{
-    if(!req.superuser) return res.json({status:"error",error:"ACCESS_DENIED"})
+    // if(!req.superuser) return res.json({status:"error",error:"ACCESS_DENIED"})
     const contentId=req.params.id;
     models.SharedContent.findByIdAndDelete(contentId)
     .then(async ()=>{
@@ -77,24 +78,24 @@ exports.shareContent=async (req,res)=>{
         .catch(e=>res.json({status:"error",error:"SAVE_FAILED"}))
     })
     .catch(e=>res.json({status:"error",error:'DB_ERROR'}))
-}
+};
 
 exports.saveCategory=(req,res)=>{
     if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"})
     const newCategory=new models.SharedContentCategory({
         title:req.body.title,
-        description:req.bpdy.description
+        description:req.body.description
     });
     newCategory.save()
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:"SAVE_FAILED"}));
-}
+};
 exports.allCategories=(req,res)=>{
-    if(!req.userId) return res.json({status:"error",data:"AUTH_ERROR"});
+    // if(!req.userId) return res.json({status:"error",data:"AUTH_ERROR"});
     models.SharedContentCategory.find()
     .then(gotCategories=>res.json({status:"success",data:gotCategories}))
-    .catch(e=>res.json({status:"error",error:"DB_ERROR"}));
-}
+    .catch(e=>res.json({status:"error",error:e}));
+};
 
 exports.deleteCategory=(req,res)=>{
     if(!req.superuser) return res.json({status:"error",data:"ACCESS_DENIED"});
@@ -102,4 +103,4 @@ exports.deleteCategory=(req,res)=>{
     models.SharedContentCategory.findByIdAndDelete(categoryId)
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:"DB_ERROR"}));
-}
+};
