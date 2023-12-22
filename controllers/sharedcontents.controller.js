@@ -1,7 +1,8 @@
 const models=require('../models')
-
+const fs=require('fs');
+const path=require('path');
 exports.saveContent=(req,res)=>{
-    if(!req.userId) return res.json({status:'error',error:"AUTH_ERROR"})
+    // if(!req.userId) return res.json({status:'error',error:"AUTH_ERROR"})
     const title=req.body.title;
     const description=req.body.description;
     const type=req.body.type;
@@ -9,21 +10,37 @@ exports.saveContent=(req,res)=>{
     const content=req.body.content;
     const author=req.userId;
     const category=req.body.category;
+    if(uploading)
+        return uploading.mv(path.resolve(__dirname,"../temp",uploading.md5),async (err)=>{
+            const newSharedContent=new models.SharedContent({
+                category:category,
+                title:title,
+                description:description,
+                content:content,
+                type:type,
+                media:{
+                    name:uploading&&uploading.filename,
+                    size:uploading&&uploading.length,
+                    md5:uploading&&uploading.md5
+                },
+                author:author
+            });
+            newSharedContent.save()
+            .then(()=>res.json({status:"success"}))
+            .catch(e=>res.json({status:"error",error:"DB_ERROR"}))            
+        })
     const newSharedContent=new models.SharedContent({
         category:category,
         title:title,
         description:description,
         content:content,
         type:type,
-        media:{
-            name:uploading&&uploading.filename,
-            size:uploading&&uploading.length
-        },
         author:author
     });
     newSharedContent.save()
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
+    
 };
 
 exports.getContent=(req,res)=>{
@@ -79,7 +96,13 @@ exports.shareContent=async (req,res)=>{
     })
     .catch(e=>res.json({status:"error",error:'DB_ERROR'}))
 };
-
+exports.allContents=(req,res)=>{
+    return models.SharedContent.find().populate('author category','email fullname title')
+    .then(gotContents=>{
+        return res.json({status:"success",data:gotContents});
+    })
+    .catch(e=>res.json({status:"error",data:e}))
+}
 exports.saveCategory=(req,res)=>{
     if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"})
     const newCategory=new models.SharedContentCategory({

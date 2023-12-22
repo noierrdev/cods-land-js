@@ -30,7 +30,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set up multer for handling file uploads
 // global.upload = multer({ storage: storage });
-app.use(fileUpload())
+app.use(fileUpload({
+    limits:{
+        fileSize:100*1024*1024
+    }
+}))
 app.use(require('./middlewares/auth.middleware'))
 
 app.use(`/${process.env.BASE_URL}`,require('./routers'));
