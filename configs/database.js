@@ -12,7 +12,7 @@ module.exports=()=>{
     // Handle MongoDB connection events
     db.on('error', console.error.bind(console, 'MongoDB connection error:'));
     db.once('open', () => {
-        global.gridfs = new MongoGridFS(mongoose.connections[0],"uploads");
+        global.gridfs = new MongoGridFS(mongoose.connections[0],"upload");
         // global.gridfs=Grid(mongoose.connection.db,mongoose.mongo);
         // global.gridfs.collection('uploads');
         console.log('Connected to MongoDB');

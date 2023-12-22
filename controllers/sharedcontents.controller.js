@@ -21,7 +21,8 @@ exports.saveContent=(req,res)=>{
                 media:{
                     name:uploading&&uploading.filename,
                     size:uploading&&uploading.length,
-                    md5:uploading&&uploading.md5
+                    md5:uploading&&uploading.md5,
+                    mimetype:uploading&&uploading.mimetype
                 },
                 author:author
             });
@@ -127,3 +128,14 @@ exports.deleteCategory=(req,res)=>{
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:"DB_ERROR"}));
 };
+
+exports.sendContentMedia=(req,res)=>{
+    const contentId=req.params.id;
+    models.SharedContent.findById(contentId)
+    .then(gotContent=>{
+        if(!gotContent) return res.json({status:"error",error:"NO_CONTENT"})
+        if(!gotContent.media) return res.json({status:"error",error:"NO_MEDIA"})
+        return res.setHeader("Content-Type",gotContent.media.mimetype?gotContent.media.mimetype:"application/octet-stream").sendFile(path.resolve(__dirname,"../temp",gotContent.media.md5))
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}

@@ -8,6 +8,7 @@ const multer=require('multer')
 const storage = multer.memoryStorage();
 
 const fileUpload=require('express-fileupload');
+const path = require('path');
 
 require('./configs/database')();
 
@@ -38,7 +39,6 @@ app.use(fileUpload({
 app.use(require('./middlewares/auth.middleware'))
 
 app.use(`/${process.env.BASE_URL}`,require('./routers'));
-
 const server=http.createServer(app);
 
 server.listen(process.env.HTTP_PORT,()=>{
