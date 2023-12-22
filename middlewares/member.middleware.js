@@ -6,7 +6,8 @@ module.exports=(req,res)=>{
     .then(gotMember=>{
         if(!gotMember) return res.json({status:"error",error:"NOT_MEMBER"})
         const now=Date.now();
-        if(gotMember.expired<now) return res.json({status:"error",error:"EXPIRED"})
+        if(gotMember.expired<now) return res.json({status:"error",error:"EXPIRED"});
+        req.member=gotMember.toJSON();
         return next();
     })
     .catch(e=>res.json({status:"error",error:e}))

@@ -1,7 +1,7 @@
 const models=require('../models');
 
 exports.saveMember=(req,res)=>{
-    if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
+    // if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
     models.Member.findOne({user:req.userId})
     .then(gotMember=>{
         if(gotMember) return res.json({status:"error",error:"ALREADY_IS_MEMBER"})
@@ -20,7 +20,7 @@ exports.saveMember=(req,res)=>{
 }
 
 exports.updateMember=(req,res)=>{
-    if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
+    // if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
     models.Member.find({user:req.userId})
     .then(gotMember=>{
         if(!gotMember) return res.json({status:"error",error:"NO_MEMBER"})
@@ -35,8 +35,8 @@ exports.updateMember=(req,res)=>{
 }
 
 exports.deleteMember=(req,res)=>{
-    if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
-    if(!req.superuser) return res.json({status:"error",error:"ACCESS_DENIED"})
+    // if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
+    // if(!req.superuser) return res.json({status:"error",error:"ACCESS_DENIED"})
     models.Member.findByIdAndRemove(req.params.id)
     .then(()=>res.json({status:"success"}))
     .catch((e)=>res.json({status:'error',error:e}))
