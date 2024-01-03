@@ -18,7 +18,11 @@ exports.deleteCategory=(req,res)=>{
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error"}))
 }
-
+exports.allCategories=(req,res)=>{
+    models.ProductCategory.find()
+    .then(gotCategories=>res.json({status:"success",data:gotCategories}))
+    .catch(e=>res.json({status:"error",error:e}))
+}
 exports.productsPage=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
@@ -31,7 +35,7 @@ exports.saveProduct=(req,res)=>{
     const title=req.body.title;
     const description=req.body.description;
     const price=req.body.price;
-    const image=req.files.image;
+    const image=req.files?req.files.image:null;
     const category=req.body.category;
     const newProduct=new models.Product({
         title:title,
@@ -67,4 +71,8 @@ exports.categoryPage=(req,res)=>{
     models.Product.find({category:category}).skip(page*pagesize).limit(pagesize).populate('category')
     .then(gotProducts=>res.json({status:"success",data:gotProducts}))
     .category(e=>res.json({status:"error",error:e}))
+}
+
+exports.addToCart=(req,res)=>{
+    
 }
