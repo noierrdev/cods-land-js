@@ -14,6 +14,7 @@ const Like=require("./Like.model");
 const SharedContentCategory=require('./SharedContentCategory')
 const Member=require('./Member.model')
 const Product=require('./Product.model')
+const CartProduct=require('./CartProduct.model')
 module.exports={
     User,
     Event,
@@ -30,5 +31,6 @@ module.exports={
     Share,
     Like,
     Member,
-    Product
+    Product,
+    CartProduct
 }
