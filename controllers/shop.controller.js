@@ -74,5 +74,32 @@ exports.categoryPage=(req,res)=>{
 }
 
 exports.addToCart=(req,res)=>{
-    
+    if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
+    const product=req.body.product;
+    const count=req.body.count;
+    const newCartProduct=new models.CartProduct({
+        user:req.userId,
+        product:product,
+        count:count?count:1
+    });
+    newCartProduct.save()
+    .then(()=>res.json({status:"success"}))
+    .catch(e=>res.json({status:"error",error:e}))
+}
+exports.setCartCount=(req,res)=>{
+    // if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
+    const product=req.params.cartproduct_id;
+    const count=req.body.count;
+    models.CartProduct.findByIdAndUpdate(product,{
+        count:count
+    })
+    .then(()=>res.json({status:"success"}))
+    .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.deleteCartProduct=(req,res)=>{
+    const product=req.params.cartproduct_id;
+    models.CartProduct.findByIdAndDelete(product)
+    .then(()=>res.json({status:"success"}))
+    .catch(e=>res.json({status:"error",error:e}))
 }
