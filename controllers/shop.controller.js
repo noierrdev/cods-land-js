@@ -1,0 +1,70 @@
+const models=require('../models');
+
+exports.saveCategory=(req, res)=>{
+    const title=req.body.title;
+    const description=req.body.description;
+    const newCategory=new models.ProductCategory({
+        title:title,
+        description:description
+    });
+    newCategory.save()
+    .then(()=>res.json({status:"success"}))
+    .catch(e=>res.json({status:"error"}))
+}
+
+exports.deleteCategory=(req,res)=>{
+    const category=req.params.category_id;
+    models.ProductCategory.findByIdAndDelete(category)
+    .then(()=>res.json({status:"success"}))
+    .catch(e=>res.json({status:"error"}))
+}
+
+exports.productsPage=(req,res)=>{
+    const page=req.body.page;
+    const pagesize=req.body.pagesize;
+    models.Product.find().skip(page*pagesize).limit(pagesize).populate('category')
+    .then(gotProducts=>res.json({status:"success",data:gotProducts}))
+    .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.saveProduct=(req,res)=>{
+    const title=req.body.title;
+    const description=req.body.description;
+    const price=req.body.price;
+    const image=req.files.image;
+    const category=req.body.category;
+    const newProduct=new models.Product({
+        title:title,
+        description:description,
+        category:category?category:null,
+        price:price,
+        detail:req.body.detail?req.body.detail:null,
+        image:image?image:null
+    });
+    newProduct.save()
+    .then(()=>res.json({status:"success"}))
+    .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.getProduct=(req,res)=>{
+    const product=req.params.product_id;
+    models.Product.findById(product).populate('category')
+    .then(gotProduct=>res.json({status:"success",data:gotProduct}))
+    .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.deleteProduct=(req,res)=>{
+    const product=req.params.product_id;
+    models.Product.findByIdAndDelete(product).populate('category')
+    .then(()=>res.json({status:"success"}))
+    .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.categoryPage=(req,res)=>{
+    const category=req.params.category_id;
+    const page=req.body.page;
+    const pagesize=req.body.pagesize;
+    models.Product.find({category:category}).skip(page*pagesize).limit(pagesize).populate('category')
+    .then(gotProducts=>res.json({status:"success",data:gotProducts}))
+    .category(e=>res.json({status:"error",error:e}))
+}

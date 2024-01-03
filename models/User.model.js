@@ -45,7 +45,7 @@ const UserSchema=new schema({
     phonenumber:{
         type:String,
         default:""
-    }
+    },
 },
 {
     timestamps: true,

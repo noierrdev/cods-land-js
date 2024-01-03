@@ -7,10 +7,14 @@ const ProductSchema=new schema({
         type:String,
     },
     category:{
-        type:String,
+        type:schema.ObjectId,
+        ref:'ProductCategory'
     },
     description:{
         type:String
+    },
+    price:{
+        type:Number
     },
     detail:{
         type:Object,
