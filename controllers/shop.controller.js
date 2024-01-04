@@ -137,3 +137,12 @@ exports.myCart=(req,res)=>{
     .then(gotProducts=>res.json({status:"success",data:gotProducts}))
     .catch(e=>res.json({status:"error",error:e}))
 }
+
+exports.productImage=(req,res)=>{
+    const product=req.params.product_id;
+    models.Product.findById(product,{image:true})
+    .then(gotImage=>{
+        return res.setHeader("Content-Type",gotImage.image.mimetype).send(gotImage.image.data.buffer);
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
