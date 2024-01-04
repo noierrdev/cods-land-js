@@ -27,7 +27,17 @@ exports.productsPage=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
     models.Product.find().skip(page*pagesize).limit(pagesize).populate('category')
-    .then(gotProducts=>res.json({status:"success",data:gotProducts}))
+    .then(async gotProducts=>{
+        const totalNumbers=await models.Product.countDocuments().lean().exec();
+        const total=Math.ceil(totalNumbers/pagesize);
+        return res.json({status:"success",data:{
+            pagedata:gotProducts,
+            page,
+            pagesize,
+            totalNumbers,
+            total
+        }})
+    })
     .catch(e=>res.json({status:"error",error:e}))
 }
 
@@ -69,8 +79,18 @@ exports.categoryPage=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
     models.Product.find({category:category}).skip(page*pagesize).limit(pagesize).populate('category')
-    .then(gotProducts=>res.json({status:"success",data:gotProducts}))
-    .category(e=>res.json({status:"error",error:e}))
+    .then(async gotProducts=>{
+        const totalNumbers=await models.Product.countDocuments({category:category}).skip(page*pagesize).limit(pagesize).lean().exec()
+        const total=Math.ceil(totalNumbers);
+        return res.json({status:"success",data:{
+            pagedata:gotProducts,
+            page,
+            pagesize,
+            totalNumbers,
+            total
+        }})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
 }
 
 exports.addToCart=(req,res)=>{
