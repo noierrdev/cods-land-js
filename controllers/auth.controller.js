@@ -31,6 +31,7 @@ exports.signup=async (req,res)=>{
                     // ]
         
                 },
+            }
         },{
             auth:{
                 username:process.env.NEON_ORGID,
