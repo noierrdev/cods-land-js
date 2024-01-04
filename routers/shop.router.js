@@ -9,6 +9,7 @@ router.delete('/categories/:category_id',shopController.deleteCategory);
 router.post('/categories/:category_id/products/page',shopController.categoryPage);
 router.post('/products',shopController.saveProduct);
 router.post('/products/page',shopController.productsPage);
+router.delete('/products/:product_id/image',shopController.productImage)
 router.delete('/products/:product_id',shopController.deleteProduct)
 router.get('/products/:product_id',shopController.getProduct);
 router.post('/cart',shopController.addToCart);
