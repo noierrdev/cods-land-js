@@ -123,3 +123,17 @@ exports.deleteCartProduct=(req,res)=>{
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:e}))
 }
+
+exports.countOfCartProducts=(req,res)=>{
+    if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
+    models.CartProduct.countDocuments({user:req.userId})
+    .then(gotCount=>res.json({status:"success",data:gotCount}))
+    .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.myCart=(req,res)=>{
+    if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
+    models.CartProduct.find({user:req.userId}).populate('product')
+    .then(gotProducts=>res.json({status:"success",data:gotProducts}))
+    .catch(e=>res.json({status:"error",error:e}))
+}

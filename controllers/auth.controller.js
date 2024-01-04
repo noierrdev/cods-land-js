@@ -1,7 +1,9 @@
 const models=require('../models');
 const jwt=require('jsonwebtoken');
 const brevo=require('@getbrevo/brevo');
-const path=require('path')
+const path=require('path');
+const axios=require('axios');
+
 exports.signup=async (req,res)=>{
     try {
         const gotUser=await models.User.findOne({email:req.body.email},{fullname:1,_id:1,email:1});
