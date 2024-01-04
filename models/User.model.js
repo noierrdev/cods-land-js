@@ -46,6 +46,9 @@ const UserSchema=new schema({
         type:String,
         default:""
     },
+    neonid:{
+        type:String
+    }
 },
 {
     timestamps: true,
