@@ -93,6 +93,8 @@ exports.completeAppointment=(req,res)=>{
     if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
     if(!req.superadmin) return res.json({status:"error",error:"ACCESS_DENIED"});
     models.Appointment.findByIdAndUpdate(req.params.id,{
-
+        status:'completed'
     })
+    .then(()=>res.json({status:"success"}))
+    .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
 }
