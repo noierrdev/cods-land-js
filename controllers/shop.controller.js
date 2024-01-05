@@ -97,14 +97,25 @@ exports.addToCart=(req,res)=>{
     if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
     const product=req.body.product;
     const count=req.body.count;
-    const newCartProduct=new models.CartProduct({
-        user:req.userId,
-        product:product,
-        count:count?count:1
-    });
-    newCartProduct.save()
-    .then(()=>res.json({status:"success"}))
-    .catch(e=>res.json({status:"error",error:e}))
+    return models.CartProduct.find({user:req.userId,product:req.body.product}).lean().exec()
+    .then(async gotCartProducts=>{
+        if(gotCartProducts.length==0){
+            const newCartProduct=new models.CartProduct({
+                user:req.userId,
+                product:product,
+                count:count?count:1
+            });
+            return newCartProduct.save()
+            .then(()=>res.json({status:"success"}))
+            .catch(e=>res.json({status:"error",error:e}))
+        }else{
+            models.CartProduct.findByIdAndUpdate(gotCartProducts[0]._id,{ $inc: { count: count?count:1 } })
+            .then(()=>res.json({status:"success"}))
+            .catch(e=>res.json({status:"error",error:e}))
+        }
+    })
+    .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
+    
 }
 exports.setCartCount=(req,res)=>{
     // if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
@@ -133,7 +144,8 @@ exports.countOfCartProducts=(req,res)=>{
 
 exports.myCart=(req,res)=>{
     if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
-    models.CartProduct.find({user:req.userId}).populate('product')
+    models.CartProduct.find({user:req.userId})
+    .populate('product')
     .then(gotProducts=>res.json({status:"success",data:gotProducts}))
     .catch(e=>res.json({status:"error",error:e}))
 }
@@ -145,4 +157,42 @@ exports.productImage=(req,res)=>{
         return res.setHeader("Content-Type",gotImage.image.mimetype).send(gotImage.image.data.buffer);
     })
     .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.saveOrder=(req,res)=>{
+    if(!req.userId) return res.json({status:'error',error:"AUTH_ERROR"});
+    models.CartProduct.find({user:req.userId},{_id:true,product:true,count:true}).populate('product').lean().exec()
+    .then(gotCartProducts=>{
+        if(gotCartProducts==[]) return res.json({status:"error",error:"EMPTY_CART"})
+        var orderProducts=[];
+        var totalPrice=0;
+        gotCartProducts.forEach((oneCartProduct)=>{
+            orderProducts.push({
+                product:oneCartProduct.product,
+                count:oneCartProduct.count
+            });
+            totalPrice+=oneCartProduct.product.price*oneCartProduct.count
+        });
+        const newOrder=new models.Order({
+            user:req.userId,
+            products:orderProducts,
+            price:totalPrice,
+            paid:true
+        });
+        newOrder.save()
+        .then(async ()=>{
+            await models.CartProduct.deleteMany({user:req.userId});
+            return res.json({status:"success"})
+        })
+        .catch(e=>res.json({status:"error",error:"SAVE_FAILED"}))
+    })
+}
+
+exports.myOrders=(req,res)=>{
+    if(!req.userId) return res.json({status:'error',error:"AUTH_ERROR"});
+    models.Order.find({user:req.userId}).populate('products.product user','email, fullname, title, description, price,')
+    .then(gotOrders=>{
+        return res.json({status:"success",data:gotOrders})
+    })
+    .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
 }

@@ -16,6 +16,7 @@ router.post('/cart',shopController.addToCart);
 router.get('/cart',shopController.myCart);
 router.get('/cart/count',shopController.countOfCartProducts);
 router.post('/cart/:cartproduct_id/count',shopController.setCartCount)
-router.delete('/cart/:cartproduct_id',shopController.deleteCartProduct)
+router.delete('/cart/:cartproduct_id',shopController.deleteCartProduct);
+router.get('/orders/save',shopController.saveOrder)
 
 module.exports=router;

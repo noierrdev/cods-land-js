@@ -9,10 +9,24 @@ const OrderSchema=new schema({
     },
     products:[
         {
-            type:schema.ObjectId,
-            ref:"CartProduct"
+            product:{
+                type:schema.ObjectId,
+                ref:"Product"
+            },
+            count:{
+                type:Number
+            }
         },
-    ]
+    ],
+    price:{
+        type:Number
+    },
+    paid:{
+        type:Boolean
+    },
+    detail:{
+        type:Object
+    }
 },{
     timestamps:true
 });
