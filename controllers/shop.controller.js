@@ -190,9 +190,40 @@ exports.saveOrder=(req,res)=>{
 
 exports.myOrders=(req,res)=>{
     if(!req.userId) return res.json({status:'error',error:"AUTH_ERROR"});
-    models.Order.find({user:req.userId}).populate('products.product user','email, fullname, title, description, price,')
+    models.Order.find({user:req.userId}).populate('products.product user','email fullname title description price')
     .then(gotOrders=>{
         return res.json({status:"success",data:gotOrders})
     })
+    .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
+}
+
+exports.pageOrders=(req,res)=>{
+    const page=req.body.page;
+    const pagesize=req.body.pagesize;
+    models.Order.find().populate('user products.product','fullname email title description price').skip(page*pagesize).limit(pagesize).lean().exec()
+    .then(async gotOrders=>{
+        const totalNumbers=await models.Order.countDocuments();
+        const total=Math.ceil(totalNumbers/pagesize)
+        return res.json({status:"success",data:{
+            pagedata:gotOrders,
+            page:page,
+            pagesize:pagesize,
+            total,
+            totalNumbers
+        }})
+    })
+    .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
+}
+
+exports.getOrder=(req,res)=>{
+    const order=req.params.order_id;
+    models.Order.findById(order).populate('user products.product','fullname email title description price')
+    .then(gotOrder=>res.json({status:'success',data:gotOrder}))
+    .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
+}
+exports.deleteOrder=(req,res)=>{
+    const order=req.params.order_id;
+    models.Order.findByIdAndDelete(order)
+    .then(()=>res.json({status:'success'}))
     .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
 }
