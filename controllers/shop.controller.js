@@ -27,7 +27,7 @@ exports.allCategories=(req,res)=>{
 exports.productsPage=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Product.find().skip(page*pagesize).limit(pagesize).populate('category')
+    models.Product.find({},{title:true,description:true,createdAt:true,price:true,count:true,}).skip(page*pagesize).limit(pagesize).populate('category')
     .then(async gotProducts=>{
         const totalNumbers=await models.Product.countDocuments().lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
@@ -76,7 +76,8 @@ exports.saveProduct=(req,res)=>{
             category:category?category:null,
             price:price,
             detail:req.body.detail?req.body.detail:null,
-            image:image?image:null
+            image:image?image:null,
+            count:req.body.count?req.body.count:null
         });
         newProduct.save()
         .then(()=>res.json({status:"success"}))

@@ -25,6 +25,9 @@ const ProductSchema=new schema({
     },
     video:{
         type:Object
+    },
+    count:{
+        type:Number
     }
 },
 {
