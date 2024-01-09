@@ -1,4 +1,5 @@
 const models=require('../models');
+const stripe=require('stripe')(process.env.STRIPE_KEY)
 
 exports.saveCategory=(req, res)=>{
     const title=req.body.title;
@@ -47,17 +48,41 @@ exports.saveProduct=(req,res)=>{
     const price=req.body.price;
     const image=req.files?req.files.image:null;
     const category=req.body.category;
-    const newProduct=new models.Product({
-        title:title,
-        description:description,
-        category:category?category:null,
-        price:price,
-        detail:req.body.detail?req.body.detail:null,
-        image:image?image:null
-    });
-    newProduct.save()
-    .then(()=>res.json({status:"success"}))
-    .catch(e=>res.json({status:"error",error:e}))
+    const video=req.files?req.files.video:null
+    if(video){
+        video.mv(path.resolve(__dirname,"../temp",video.md5),async ()=>{
+            const newProduct=new models.Product({
+                title:title,
+                description:description,
+                category:category?category:null,
+                price:price,
+                detail:req.body.detail?req.body.detail:null,
+                image:image?image:null,
+                video:{
+                    name:video&&video.filename,
+                    size:video&&video.length,
+                    md5:video&&video.md5,
+                    mimetype:video&&video.mimetype
+                }
+            });
+            newProduct.save()
+            .then(()=>res.json({status:"success"}))
+            .catch(e=>res.json({status:"error",error:e}))
+        })
+    }else{
+        const newProduct=new models.Product({
+            title:title,
+            description:description,
+            category:category?category:null,
+            price:price,
+            detail:req.body.detail?req.body.detail:null,
+            image:image?image:null
+        });
+        newProduct.save()
+        .then(()=>res.json({status:"success"}))
+        .catch(e=>res.json({status:"error",error:e}))
+    }
+    
 }
 
 exports.getProduct=(req,res)=>{
@@ -177,6 +202,7 @@ exports.saveOrder=(req,res)=>{
             user:req.userId,
             products:orderProducts,
             price:totalPrice,
+            detail:req.body.detail?req.body.detail:null,
             paid:true
         });
         newOrder.save()
@@ -227,3 +253,18 @@ exports.deleteOrder=(req,res)=>{
     .then(()=>res.json({status:'success'}))
     .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
 }
+
+exports.startPayment=async (req,res)=>{
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: req.body.price,
+        currency: 'usd',
+      });
+    
+      return res.send({
+        status:"success",
+        data:{
+            clientSecret: paymentIntent.client_secret,
+        } 
+      });
+}
+

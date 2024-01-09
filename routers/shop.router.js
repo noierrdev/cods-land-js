@@ -20,6 +20,8 @@ router.delete('/cart/:cartproduct_id',shopController.deleteCartProduct);
 router.post('/orders/save',shopController.saveOrder)
 router.get('/orders',shopController.myOrders)
 router.post('/orders/page',shopController.pageOrders)
+router.post('/orders/start-pay',shopController.startPayment)
 router.get('/orders/:order_id',shopController.getOrder)
-router.delete('/orders/:order_id',shopController.deleteOrder)
+router.delete('/orders/:order_id',shopController.deleteOrder);
+
 module.exports=router;

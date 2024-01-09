@@ -9,7 +9,14 @@ exports.saveMember=(req,res)=>{
         const newMember=new models.Member({
             user:req.userId,
             type:req.body.type,
-            creditcard:req.body.creditcard,
+            creditcard:req.body.creditcard?req.body.creditcard:null,
+            fullname:req.body.fullname?req.body.fullname:null,
+            birthday:req.body.birthday?req.body.birthday:null,
+            email:req.body.email?req.body.email:null,
+            phonenumber:req.body.phonenumber?req.body.phonenumber:null,
+            gender:req.body.gender?req.body.gender:null,
+            billing:req.body.billing?req.body.billing:null,
+            shipping:req.body.shipping?req.body.shipping:null,
             expired:now+req.body.period*24*60*60*1000
         });
         newMember.save()

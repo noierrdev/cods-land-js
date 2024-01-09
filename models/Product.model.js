@@ -22,6 +22,9 @@ const ProductSchema=new schema({
     },
     image:{
         type:Object
+    },
+    video:{
+        type:Object
     }
 },
 {
