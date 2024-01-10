@@ -1,5 +1,5 @@
 const models=require('../models')
-
+const jwt=require('jsonwebtoken')
 exports.adminSignIn=async (req,res)=>{
     const gotUser=await models.User.findOne({email:req.body.email},{superuser:1,fullname:1,_id:1,email:1,allow:1,verified:1,password:1});
     if(!gotUser) return res.json({status:"error",error:"NO_USER"});
