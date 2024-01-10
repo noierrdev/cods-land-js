@@ -12,7 +12,23 @@ exports.saveCategory=(req, res)=>{
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error"}))
 }
-
+exports.pageCategories=(req,res)=>{
+    const page=req.body.page;
+    const pagesize=req.body.pagesize;
+    models.ProductCategory.find({},{title:true,description:true,createdAt:true}).skip(page*pagesize).limit(pagesize).populate('category')
+    .then(async gotProductCategories=>{
+        const totalNumbers=await models.ProductCategory.countDocuments().lean().exec();
+        const total=Math.ceil(totalNumbers/pagesize);
+        return res.json({status:"success",data:{
+            pagedata:gotProductCategories,
+            page,
+            pagesize,
+            totalNumbers,
+            total
+        }})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
 exports.deleteCategory=(req,res)=>{
     const category=req.params.category_id;
     models.ProductCategory.findByIdAndDelete(category)

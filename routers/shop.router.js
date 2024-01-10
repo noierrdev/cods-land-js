@@ -5,6 +5,7 @@ router.get("/",(req,res)=>{
 });
 router.post('/categories',shopController.saveCategory);
 router.get('/categories/',shopController.allCategories)
+router.post('/categories/page',shopController.pageCategories)
 router.delete('/categories/:category_id',shopController.deleteCategory);
 router.post('/categories/:category_id/products/page',shopController.categoryPage);
 router.post('/products',shopController.saveProduct);
