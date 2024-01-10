@@ -15,7 +15,7 @@ exports.saveCategory=(req, res)=>{
 exports.pageCategories=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.ProductCategory.find({},{title:true,description:true,createdAt:true}).skip(page*pagesize).limit(pagesize).populate('category')
+    models.ProductCategory.find({}).skip(page*pagesize).limit(pagesize)
     .then(async gotProductCategories=>{
         const totalNumbers=await models.ProductCategory.countDocuments().lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
