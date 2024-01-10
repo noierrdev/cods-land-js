@@ -7,5 +7,6 @@ router.use('/shared-contents',require('./sharedcontents.router'))
 router.use('/members',require('./members.router'))
 router.use('/shop',require('./shop.router'))
 router.use('/test',require('./test.router'))
+router.use('/admin',require('./admin.router'))
 
 module.exports=router;

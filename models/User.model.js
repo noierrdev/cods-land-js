@@ -48,6 +48,9 @@ const UserSchema=new schema({
     },
     neonid:{
         type:String
+    },
+    superuser:{
+        type:Boolean
     }
 },
 {
