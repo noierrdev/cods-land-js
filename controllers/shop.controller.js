@@ -43,7 +43,7 @@ exports.allCategories=(req,res)=>{
 exports.productsPage=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Product.find({},{title:true,description:true,createdAt:true,price:true,count:true,}).skip(page*pagesize).limit(pagesize).populate('category')
+    models.Product.find({},{title:true,description:true,createdAt:true,price:true,count:true,}).skip(page*pagesize).limit(pagesize).populate('category','title')
     .then(async gotProducts=>{
         const totalNumbers=await models.Product.countDocuments().lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
