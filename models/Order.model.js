@@ -24,6 +24,9 @@ const OrderSchema=new schema({
     paid:{
         type:Boolean
     },
+    address:{
+        type:String
+    },
     status:{
         type:String
     },

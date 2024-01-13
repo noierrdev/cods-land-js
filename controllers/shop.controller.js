@@ -221,6 +221,7 @@ exports.saveOrder=(req,res)=>{
             products:orderProducts,
             price:totalPrice,
             detail:req.body.detail?req.body.detail:null,
+            address:req.body.location?req.body.location:"Earth",
             paid:true
         });
         newOrder.save()
@@ -239,6 +240,12 @@ exports.saveOrder=(req,res)=>{
                 <body>
                     <h2>New order arrived form ${req.email}</h2>
                     <h2>The Id of new order is ${gotOrder._id}</h2>
+                    <h2>The address of buyer is ${req.body.location}</h2>
+                    ${
+                        gotCartProducts.map((oneProduct)=>{
+                            return '<h3>'+oneProduct.product.title+'('+oneProduct.product._id+')'+' X '+oneProduct.count+'</h3>'
+                        })
+                    }
                     <a href="http://188.215.92.120:3001/" ><h2>Cods.Land-shopping-admin</h2></a>
                 </body>
             </html>`;
