@@ -237,15 +237,22 @@ exports.saveOrder=(req,res)=>{
             sendSmtpEmail.htmlContent = `
             <html>
                 <body>
-                    <h2>New order arrived.</h2>
-                    
+                    <h2>New order arrived form ${req.email}</h2>
+                    <h2>The Id of new order is ${gotOrder._id}</h2>
+                    <a href="http://188.215.92.120:3001/" ><h2>Cods.Land-shopping-admin</h2></a>
                 </body>
             </html>`;
-            sendSmtpEmail.sender = { "name": "Vander Moleker", "email": "noierrdev@proton.me" };
+            sendSmtpEmail.sender = { "name": "Cods.Land", "email": "info@cods.land" };
             sendSmtpEmail.to = [
 
                 {
-                "email": "info@cods.land", "name": ""
+                    "email": "noierrdev@proton.me", "name": "Vander Moleker"
+                },
+                {
+                    "email": "ncrdean@gmail.com", "name": "Dean Howell"
+                },
+                {
+                    "email": "dean@cods.land", "name": "Dean Howell"
                 }
             ];
             sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
