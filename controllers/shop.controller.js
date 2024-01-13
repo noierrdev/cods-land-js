@@ -1,5 +1,6 @@
 const models=require('../models');
 const stripe=require('stripe')(process.env.STRIPE_KEY)
+const brevo=require('@getbrevo/brevo');
 
 exports.saveCategory=(req, res)=>{
     const title=req.body.title;
@@ -223,9 +224,39 @@ exports.saveOrder=(req,res)=>{
             paid:true
         });
         newOrder.save()
-        .then(async ()=>{
+        .then(async (gotOrder)=>{
+            console.log(gotOrder)
             await models.CartProduct.deleteMany({user:req.userId});
-            return res.json({status:"success"})
+            // return res.json({status:"success"})
+            let defaultClient = brevo.ApiClient.instance;
+            let apiKey = defaultClient.authentications['api-key'];
+            apiKey.apiKey = process.env.BREVO_KEY;
+            let apiInstance = new brevo.TransactionalEmailsApi();
+            let sendSmtpEmail = new brevo.SendSmtpEmail();
+            sendSmtpEmail.subject = "New Order Arrived from "+req.email;
+            sendSmtpEmail.htmlContent = `
+            <html>
+                <body>
+                    <h2>New order arrived.</h2>
+                    
+                </body>
+            </html>`;
+            sendSmtpEmail.sender = { "name": "Vander Moleker", "email": "noierrdev@proton.me" };
+            sendSmtpEmail.to = [
+
+                {
+                "email": "info@cods.land", "name": ""
+                }
+            ];
+            sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+            sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" };
+
+
+            apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+                return res.json({ status: "success", data: data });
+            }, function (error) {
+                return res.json({ status: "error",error:error });
+            });
         })
         .catch(e=>res.json({status:"error",error:"SAVE_FAILED"}))
     })
@@ -241,6 +272,7 @@ exports.myOrders=(req,res)=>{
 }
 
 exports.pageOrders=(req,res)=>{
+    
     const page=req.body.page;
     const pagesize=req.body.pagesize;
     models.Order.find().populate('user products.product','fullname email title description price').skip(page*pagesize).limit(pagesize).lean().exec()
