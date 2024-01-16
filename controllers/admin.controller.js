@@ -27,3 +27,41 @@ exports.adminSignIn=async (req,res)=>{
     }}))
     .catch((e)=>res.json({status:"error",error:e}))
 }
+
+exports.usersPage=(req,res)=>{
+    const page=req.body.page;
+    const pagesize=req.body.pagesize;
+    models.User.find({},
+        {
+            email:true,
+            neonid:true,
+            superuser:true,
+            allow:true,
+            verified:true,
+            gender:true,
+            city:true,
+            fullname:true,
+            country:true
+        })
+    .skip(page*pagesize).limit(pagesize)
+    .then(async gotUsers=>{
+        const totalNumbers=await models.User.countDocuments();
+        const total=Math.ceil(totalNumbers/pagesize);
+        return res.json({status:"success",data:{
+            pagedata:gotUsers,
+            page:page,
+            pagesize:pagesize,
+            totalNumbers,
+            total
+        }})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.deleteUser=(req,res)=>{
+    models.User.findByIdAndDelete(req.params.user_id)
+    .then(()=>{
+        return res.json({status:"success"})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
