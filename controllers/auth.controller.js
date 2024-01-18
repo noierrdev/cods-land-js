@@ -8,36 +8,36 @@ exports.signup=async (req,res)=>{
     try {
         const gotUser=await models.User.findOne({email:req.body.email},{fullname:1,_id:1,email:1});
         if(gotUser) return res.json({status:"error",error:"ALREADY_EXIST"});
-        const neonRes=await axios.post('https://api.neoncrm.com/v2/accounts',{
-            "individualAccount": {
-                "login": {
-                    "username": req.body.email,
-                    "password": req.body.password
-                },
-                "primaryContact":{
-                    "firstName":req.body.fullname.split(' ')[0],
-                    "lastName":req.body.fullname.split(' ')[1]?req.body.fullname.split(' ')[1]:"",
-                    "dob": {
-                        "day": req.body.birthday.split('-')[2],
-                        "month": req.body.birthday.split('-')[1],
-                        "year": req.body.birthday.split('-')[0]
-                    },
-                    "email1":req.body.email,
-                    // "addresses":[
-                    //     {
-                    //         city:req.body.city,
-                    //         country:req.body.country
-                    //     }
-                    // ]
+        // const neonRes=await axios.post('https://api.neoncrm.com/v2/accounts',{
+        //     "individualAccount": {
+        //         "login": {
+        //             "username": req.body.email,
+        //             "password": req.body.password
+        //         },
+        //         "primaryContact":{
+        //             "firstName":req.body.fullname.split(' ')[0],
+        //             "lastName":req.body.fullname.split(' ')[1]?req.body.fullname.split(' ')[1]:"",
+        //             "dob": {
+        //                 "day": req.body.birthday.split('-')[2],
+        //                 "month": req.body.birthday.split('-')[1],
+        //                 "year": req.body.birthday.split('-')[0]
+        //             },
+        //             "email1":req.body.email,
+        //             // "addresses":[
+        //             //     {
+        //             //         city:req.body.city,
+        //             //         country:req.body.country
+        //             //     }
+        //             // ]
         
-                },
-            }
-        },{
-            auth:{
-                username:process.env.NEON_ORGID,
-                password:process.env.NEON_APIKEY
-            }
-        })
+        //         },
+        //     }
+        // },{
+        //     auth:{
+        //         username:process.env.NEON_ORGID,
+        //         password:process.env.NEON_APIKEY
+        //     }
+        // })
         // .then(response=>console.log(response.data))
         // console.log(neonRes)
         const newUser=new models.User({
@@ -49,7 +49,7 @@ exports.signup=async (req,res)=>{
             country:req.body.country,
             password:req.body.password,
             avatar:req.files?req.files.upload:null,
-            neonid:neonRes.data.id
+            // neonid:neonRes.data.id
         })
         newUser.save()
         .then(()=>{
