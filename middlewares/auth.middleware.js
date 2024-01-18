@@ -1,7 +1,7 @@
 const models=require('../models')
 const jwt=require('jsonwebtoken')
 module.exports=async (req,res,next)=>{
-    const token=req.headers.token;
+    const token=req.headers&&req.headers.token;
     if(!token) return  next();
     const gotToken=await models.Token.findOne({ token:token});
     if(!gotToken) return next();
