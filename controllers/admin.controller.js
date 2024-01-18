@@ -65,3 +65,51 @@ exports.deleteUser=(req,res)=>{
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
+exports.uploadCSV=async (req,res)=>{
+    //name
+    //sku
+    //subtitle
+    //description
+    //category1
+    //category2
+    //category3
+    //image
+    //ribbon
+    //ribbonColor
+    //weight
+    //price
+    //recommended_price
+    //quantity
+    //enabled
+    //taxClassCode
+    //shipping_freight
+    //fixed_shipping_rate_only
+    //shippingType
+    //shippingMethodMarkup
+    //shippingFlatRate
+    //shippingDisabledMethods
+    //shippingEnabledMethods
+    //upc
+    //brand
+    //seo_title
+    //seo_description
+    //product_url
+    //product_id
+    const csvFile=req.files.csv;
+    const csvData=String(csvFile.data).split("\n");
+    csvData.splice(0,1);
+    console.log(csvData.length)
+    for(var oneLine of csvData){
+        var oneProduct=oneLine.split(",");
+        const oneNewProduct=new models.Product({
+            title:oneProduct[0],
+            description:oneProduct[3],
+            image_url:oneProduct[7]==""?null:oneProduct[7],
+            price:Number(oneProduct[11])?Number(oneProduct[11]):0,
+            detail:{raw:oneProduct}
+        })
+        await oneNewProduct.save()
+
+    }
+    return res.json({status:"success"})
+}

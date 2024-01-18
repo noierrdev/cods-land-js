@@ -26,6 +26,9 @@ const ProductSchema=new schema({
     video:{
         type:Object
     },
+    image_url:{
+        type:String
+    },
     count:{
         type:Number
     }

@@ -1,7 +1,7 @@
 const models=require('../models');
 const stripe=require('stripe')(process.env.STRIPE_KEY)
 const brevo=require('@getbrevo/brevo');
-
+const path=require('path')
 exports.saveCategory=(req, res)=>{
     const title=req.body.title;
     const description=req.body.description;
@@ -44,7 +44,7 @@ exports.allCategories=(req,res)=>{
 exports.productsPage=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Product.find({},{title:true,description:true,createdAt:true,price:true,count:true,}).skip(page*pagesize).limit(pagesize).populate('category','title')
+    models.Product.find({},{title:true,image_url:true,description:true,createdAt:true,price:true,count:true,}).skip(page*pagesize).limit(pagesize).populate('category','title')
     .then(async gotProducts=>{
         const totalNumbers=await models.Product.countDocuments().lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
@@ -197,6 +197,7 @@ exports.productImage=(req,res)=>{
     const product=req.params.product_id;
     models.Product.findById(product,{image:true})
     .then(gotImage=>{
+        if(!gotImage.image) return res.setHeader("Content-Type","image/png").sendFile(path.resolve(__dirname,"../static/images/default-product.png"))
         return res.setHeader("Content-Type",gotImage.image.mimetype).send(gotImage.image.data.buffer);
     })
     .catch(e=>res.json({status:"error",error:e}))
