@@ -20,4 +20,7 @@ router.post('/webhook', async (req, res) => {
     // Handle specific Stripe events (payment success, etc.)
     res.json({ received: true });
   });
+router.get('/ip',(req,res)=>{
+  return res.json({status:"success",data:req.ip})
+})
 module.exports=router;
