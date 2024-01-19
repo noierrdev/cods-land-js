@@ -49,6 +49,7 @@ exports.signup=async (req,res)=>{
             country:req.body.country,
             password:req.body.password,
             avatar:req.files?req.files.upload:null,
+            superuser:false
             // neonid:neonRes.data.id
         })
         newUser.save()
