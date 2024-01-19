@@ -31,6 +31,15 @@ const ProductSchema=new schema({
     },
     count:{
         type:Number
+    },
+    category1:{
+        type:String
+    },
+    category2:{
+        type:String
+    },
+    category3:{
+        type:String
     }
 },
 {
