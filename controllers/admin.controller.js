@@ -100,11 +100,13 @@ exports.uploadCSV=async (req,res)=>{
     csvData.splice(0,1);
     console.log(csvData.length)
     for(var oneLine of csvData){
-        var oneProduct=oneLine.split(",");
+        var oneProduct=oneLine.split(";cartdata;,");
+        // var image_url=oneProduct[7];
+        var image_possible=oneProduct.find((oneFiled)=>oneFiled.includes('https://d2j6dbq0eux0bg.cloudfront.net/images/'))
         const oneNewProduct=new models.Product({
             title:oneProduct[0],
             description:oneProduct[3],
-            image_url:oneProduct[7]==""?null:oneProduct[7],
+            image_url:image_possible?image_possible:"",
             price:Number(oneProduct[11])?Number(oneProduct[11]):0,
             detail:{raw:oneProduct}
         })
