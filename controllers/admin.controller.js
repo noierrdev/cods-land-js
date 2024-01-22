@@ -41,7 +41,8 @@ exports.usersPage=(req,res)=>{
             gender:true,
             city:true,
             fullname:true,
-            country:true
+            country:true,
+            createdAt:true
         })
     .skip(page*pagesize).limit(pagesize)
     .then(async gotUsers=>{
@@ -108,7 +109,7 @@ exports.uploadCSV=async (req,res)=>{
             description:oneProduct[3],
             image_url:image_possible?image_possible:"",
             price:Number(oneProduct[11])?Number(oneProduct[11]):0,
-            detail:{raw:oneProduct}
+            detail:{raw:oneProduct},
         })
         await oneNewProduct.save()
 
