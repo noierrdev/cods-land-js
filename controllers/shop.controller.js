@@ -2,6 +2,10 @@ const models=require('../models');
 const stripe=require('stripe')(process.env.STRIPE_KEY)
 const brevo=require('@getbrevo/brevo');
 const path=require('path')
+const axios =require('axios')
+const {Storage}=require('megajs');
+const fs = require('fs');
+
 exports.saveCategory=(req, res)=>{
     const title=req.body.title;
     const description=req.body.description;
@@ -59,13 +63,37 @@ exports.productsPage=(req,res)=>{
     .catch(e=>res.json({status:"error",error:e}))
 }
 
-exports.saveProduct=(req,res)=>{
+const getMegaSession=async (fileObj)=>{
+    try {
+        // Create a new Storage instance and wait for it to be ready
+        const storage = await new Storage({
+          email: process.env.MEGA_EMAIL,
+          password: process.env.MEGA_PASSWORD
+        }).ready;
+    
+        // Log the buffer from fileObj
+        // console.log(storage.upload);
+    
+        // Upload the file to MEGA
+        const uploadResult = await storage.upload(
+          { name: fileObj.name, size: fileObj.size },
+          Buffer.from(fileObj.data)
+        ).complete;
+    
+        console.log('Upload Result:', uploadResult);
+      } catch (error) {
+        console.error('Error uploading file to MEGA:', error);
+      }
+}
+
+exports.saveProduct=async (req,res)=>{
     const title=req.body.title;
     const description=req.body.description;
     const price=req.body.price;
     const image=req.files?req.files.image:null;
     const category=req.body.category;
     const video=req.files?req.files.video:null
+    // await getMegaSession(image)
     if(video){
         video.mv(path.resolve(__dirname,"../temp",video.md5),async ()=>{
             const newProduct=new models.Product({
@@ -290,7 +318,7 @@ exports.pageOrders=(req,res)=>{
     
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Order.find().populate('user products.product','fullname email title description price').skip(page*pagesize).limit(pagesize).lean().exec()
+    models.Order.find().populate('user products.product','fullname email title description price image_url').skip(page*pagesize).limit(pagesize).lean().exec()
     .then(async gotOrders=>{
         const totalNumbers=await models.Order.countDocuments();
         const total=Math.ceil(totalNumbers/pagesize)

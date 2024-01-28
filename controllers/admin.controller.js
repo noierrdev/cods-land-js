@@ -1,5 +1,21 @@
 const models=require('../models')
 const jwt=require('jsonwebtoken')
+
+const getMegaSession=async ()=>{
+    try {
+        const response = await axios.post('https://eu.api.mega.co.nz/cs', {
+            a: 'us',
+            user: process.env.MEGA_EMAIL, // Replace with your MEGA email
+            uh: process.env.MEGA_PASSWORD, // Replace with your MEGA password
+            });
+        
+            return response.data[0];
+        } catch (error) {
+        console.error('Error obtaining session ID:', error.response.data);
+        throw new Error('Failed to obtain session ID');
+    }
+}
+
 exports.adminSignIn=async (req,res)=>{
     const gotUser=await models.User.findOne({email:req.body.email},{superuser:1,fullname:1,_id:1,email:1,allow:1,verified:1,password:1});
     if(!gotUser) return res.json({status:"error",error:"NO_USER"});
