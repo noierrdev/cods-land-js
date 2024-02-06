@@ -1,6 +1,6 @@
 const models=require('../models')
 
-module.exports=(req,res)=>{
+module.exports=(req,res,next)=>{
     if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"})
     models.Member.findOne({user:req.userId})
     .then(gotMember=>{
