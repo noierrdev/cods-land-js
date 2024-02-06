@@ -1,4 +1,5 @@
 const models=require('../models');
+const stripe=require('stripe')(process.env.STRIPE_KEY)
 
 exports.saveMember=(req,res)=>{
     // if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
@@ -57,3 +58,21 @@ exports.deleteMember=(req,res)=>{
     })
     .catch(e=>res.json({status:"error",data:e}))
  }
+
+ exports.startPayment=async (req,res)=>{
+    const type =  req.body.type;
+    let amount = 0;
+    if(type == '1') amount = 7.5
+    else amount = 100
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd',
+      });
+    
+      return res.send({
+        status:"success",
+        data:{
+            clientSecret: paymentIntent.client_secret,
+        } 
+      });
+}

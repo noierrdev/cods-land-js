@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"codsland.likes"}],"uuid":"768dedfdc373476f8b8b43cf1731f99d"}
