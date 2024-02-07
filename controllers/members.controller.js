@@ -62,8 +62,8 @@ exports.deleteMember=(req,res)=>{
  exports.startPayment=async (req,res)=>{
     const type =  req.body.type;
     let amount = 0;
-    if(type == '1') amount = 7.5
-    else amount = 100
+    if(type == '1') amount = 750;
+    else amount = 10000;
     const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: 'usd',
