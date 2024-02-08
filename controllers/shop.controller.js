@@ -319,7 +319,7 @@ exports.pageOrders=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
     // models.Order.find().populate('user products.product','fullname email title description price image_url').skip(page*pagesize).limit(pagesize).lean().exec()
-    models.Order.find().populate('user', 'fullname email').populate({path: 'populatedProducts', select: 'title price description price image_url'}).skip(page*pagesize).limit(pagesize).lean().exec()
+    models.Order.find().populate('user', 'fullname email').populate({path: 'populatedProducts', select: 'title price description price image_url'}).lean().exec()
     .then(async gotOrders=>{
         const totalNumbers=await models.Order.countDocuments();
         const total=Math.ceil(totalNumbers/pagesize)
