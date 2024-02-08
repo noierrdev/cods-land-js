@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"codsland.appointments"}],"uuid":"312e8df13c4f442aa967787b5550c82a"}

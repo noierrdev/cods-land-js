@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"codsland.usergroups"}],"uuid":"5aab0d03868645818aa0334f57883312"}

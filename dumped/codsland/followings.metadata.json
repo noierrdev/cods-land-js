@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"codsland.followings"}],"uuid":"e2a51737bbaa451a93c3055aa7a4e278"}

@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"codsland.notifications"}],"uuid":"0c219a4333d34178aa6e356c3e1d3da0"}
