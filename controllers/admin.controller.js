@@ -17,8 +17,8 @@ const getMegaSession=async ()=>{
 }
 
 exports.adminSignIn=async (req,res)=>{
-    // const gotUser=await models.User.findOne({email:req.body.email},{superuser:1,fullname:1,_id:1,email:1,allow:1,verified:1,password:1});
-    const gotUser=await models.User.findOne({email:"lucasdavis0830@gmail.com"},{fullname:1,_id:1,email:1,allow:1,verified:1,password:1});
+    const gotUser=await models.User.findOne({email:req.body.email},{superuser:1,fullname:1,_id:1,email:1,allow:1,verified:1,password:1});
+    // const gotUser=await models.User.findOne({email:"lucasdavis0830@gmail.com"},{fullname:1,_id:1,email:1,allow:1,verified:1,password:1});
     if(!gotUser) return res.json({status:"error",error:"NO_USER"});
     if(!gotUser.allow) return res.json({status:"error",error:"BLOCKED_USER"});
     if(!gotUser.comparePassword(req.body.password)) return res.json({status:"error",error:"WRONG_PASSWORD"});
