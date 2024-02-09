@@ -10,7 +10,7 @@ const OrderSchema=new schema({
     products:[
         {
             product:{
-                type:mongoose.Schema.Types.ObjectId,
+                type:schema.ObjectId,
                 ref:"Product"
             },
             count:{
@@ -37,11 +37,6 @@ const OrderSchema=new schema({
     timestamps:true
 });
 
-OrderSchema.virtual('populatedProducts', {
-    ref: 'Product',
-    localField: 'products.product',
-    foreignField: '_id'
-});
 
 const Order=mongoose.model("Order",OrderSchema)
 module.exports=Order;
