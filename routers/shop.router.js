@@ -26,5 +26,6 @@ router.post('/orders/page',isSignIn, isMember, shopController.pageOrders)
 router.post('/orders/start-pay',isSignIn, isMember, shopController.startPayment)
 router.get('/orders/:order_id',isSignIn, isMember, shopController.getOrder)
 router.delete('/orders/:order_id',isSignIn, isMember, shopController.deleteOrder);
+router.post('/shipOrder', isSignIn, isMember, shopController.shipOrder);
 
 module.exports=router;

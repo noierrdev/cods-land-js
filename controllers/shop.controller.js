@@ -1,5 +1,6 @@
 const models=require('../models');
 const stripe=require('stripe')(process.env.STRIPE_KEY)
+var shippo = require('shippo')(process.env.Shippo_KEY);
 const brevo=require('@getbrevo/brevo');
 const path=require('path')
 const axios =require('axios')
@@ -359,5 +360,11 @@ exports.startPayment=async (req,res)=>{
             clientSecret: paymentIntent.client_secret,
         } 
       });
+}
+
+exports.shipOrder=(req, res) =>{
+    return res.send({
+        status: "success"
+    })
 }
 
