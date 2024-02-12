@@ -251,6 +251,7 @@ exports.saveOrder=(req,res)=>{
             price:totalPrice,
             detail:req.body.detail?req.body.detail:null,
             address:req.body.location?req.body.location:"Earth",
+            shipingDate: req.body.date,
             paid:true
         });
         newOrder.save()

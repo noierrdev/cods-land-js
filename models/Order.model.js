@@ -32,6 +32,9 @@ const OrderSchema=new schema({
     },
     detail:{
         type:Object
+    },
+    shipingDate:{
+        type:Date,
     }
 },{
     timestamps:true
