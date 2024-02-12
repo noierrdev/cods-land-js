@@ -427,7 +427,7 @@ exports.shipOrder=async (req, res) =>{
         }, function(err, transaction) {
             return res.send({
                 status: "success",
-                shipment: shipment
+                transaction: transaction
             })
         });
     });
