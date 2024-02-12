@@ -363,8 +363,23 @@ exports.startPayment=async (req,res)=>{
 }
 
 exports.shipOrder=(req, res) =>{
-    return res.send({
-        status: "success"
+    shippo.address.create({
+        "name":"Shawn Ippotle",
+        "company":"Shippo",
+        "street1":"215 Clayton St.",
+        "city":"San Francisco",
+        "state":"CA",
+        "zip":"94117",
+        "country":"US", // iso2 country code
+        "phone":"+1 555 341 9393",
+        "email":"shippotle@shippo.com",
+    }).then((address) => {
+        // If the address creation was successful, handle the response
+        console.log(address);
+        return res.send({
+            status: "success",
+            data: address
+        });
     })
 }
 
