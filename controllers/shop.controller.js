@@ -422,7 +422,7 @@ exports.shipOrder=async (req, res) =>{
             });
         }
     
-        var rate = shipment.rates[1];
+        var rate = shipment.rates[3];
         shippo.transaction.create({
             "rate": rate.object_id,
             "label_file_type": "PDF",
