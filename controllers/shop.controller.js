@@ -415,10 +415,21 @@ exports.shipOrder=async (req, res) =>{
         "async": false
     }, function(err, shipment){
         // asynchronously called
-        return res.send({
-            status: "success",
-            shipment: shipment
-        })
+        // return res.send({
+        //     status: "success",
+        //     shipment: shipment
+        // })
+        var rate = shipment.rates[0];
+        shippo.transaction.create({
+            "rate": rate.object_id,
+            "label_file_type": "PDF",
+            "async": false
+        }, function(err, transaction) {
+            return res.send({
+                status: "success",
+                shipment: shipment
+            })
+        });
     });
 }
 
