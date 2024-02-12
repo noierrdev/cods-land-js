@@ -363,7 +363,7 @@ exports.startPayment=async (req,res)=>{
 }
 
 exports.shipOrder=(req, res) =>{
-    shippo.address.create({
+    var addressFrom  = shippo.address.create({
         "name":"Shawn Ippotle",
         "company":"Shippo",
         "street1":"215 Clayton St.",
@@ -373,13 +373,13 @@ exports.shipOrder=(req, res) =>{
         "country":"US", // iso2 country code
         "phone":"+1 555 341 9393",
         "email":"shippotle@shippo.com",
-    }).then((address) => {
-        // If the address creation was successful, handle the response
-        console.log(address);
-        return res.send({
-            status: "success",
-            data: address
-        });
+    })
+    console.log(addressFrom);
+    return res.send({
+        status:"success",
+        data:{
+            addressFrom: addressFrom
+        }
     })
 }
 
