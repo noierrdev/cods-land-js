@@ -362,8 +362,8 @@ exports.startPayment=async (req,res)=>{
       });
 }
 
-exports.shipOrder=(req, res) =>{
-    var addressFrom  = shippo.address.create({
+exports.shipOrder=async(req, res) =>{
+    var addressFrom  = await shippo.address.create({
         "name":"Shawn Ippotle",
         "company":"Shippo",
         "street1":"215 Clayton St.",
