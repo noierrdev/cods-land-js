@@ -414,21 +414,32 @@ exports.shipOrder=async (req, res) =>{
         "parcels": [parcel],
         "async": false
     }, function(err, shipment){
-        // asynchronously called
-        // return res.send({
-        //     status: "success",
-        //     shipment: shipment
-        // })
+        if (err) {
+            console.error("Error creating shipment:", err);
+            return res.status(500).send({
+                status: "error",
+                message: "Error creating shipment"
+            });
+        }
+    
         var rate = shipment.rates[0];
         shippo.transaction.create({
             "rate": rate.object_id,
             "label_file_type": "PDF",
             "async": false
         }, function(err, transaction) {
+            if (err) {
+                console.error("Error creating transaction:", err);
+                return res.status(500).send({
+                    status: "error",
+                    message: "Error creating transaction"
+                });
+            }
+    
             return res.send({
                 status: "success",
                 transaction: transaction
-            })
+            });
         });
     });
 }
