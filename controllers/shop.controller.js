@@ -363,8 +363,6 @@ exports.startPayment=async (req,res)=>{
 }
 
 exports.shipOrder=async (req, res) =>{
-    var shippo = require('shippo')('<API_Token>');
-
     var addressFrom  = {
         "name": "Shawn Ippotle",
         "company": "Shippo",
