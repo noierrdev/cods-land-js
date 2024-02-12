@@ -363,23 +363,62 @@ exports.startPayment=async (req,res)=>{
 }
 
 exports.shipOrder=async (req, res) =>{
-    var addressFrom  = await shippo.address.create({
-        "name":"Shawn Ippotle",
-        "company":"Shippo",
-        "street1":"215 Clayton St.",
-        "city":"San Francisco",
-        "state":"CA",
-        "zip":"94117",
-        "country":"US", // iso2 country code
-        "phone":"+1 555 341 9393",
-        "email":"shippotle@shippo.com",
-    })
-    console.log(addressFrom);
-    return res.send({
-        status:"success",
-        data:{
-            addressFrom: addressFrom
-        }
-    })
+    // var addressFrom  = await shippo.address.create({
+    //     "name":"Shawn Ippotle",
+    //     "company":"Shippo",
+    //     "street1":"215 Clayton St.",
+    //     "city":"San Francisco",
+    //     "state":"CA",
+    //     "zip":"94117",
+    //     "country":"US", // iso2 country code
+    //     "phone":"+1 555 341 9393",
+    //     "email":"shippotle@shippo.com",
+    // })
+    // console.log(addressFrom);
+    // return res.send({
+    //     status:"success",
+    //     data:{
+    //         addressFrom: addressFrom
+    //     }
+    // })
+    var addressFrom  = {
+        "name": "Shawn Ippotle",
+        "street1": "215 Clayton St.",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94117",
+        "country": "US"
+    };
+    
+    var addressTo = {
+        "name": "Mr Hippo",
+        "street1": "Broadway 1",
+        "city": "New York",
+        "state": "NY",
+        "zip": "10007",
+        "country": "US"
+    };
+    
+    var parcel = {
+        "length": "5",
+        "width": "5",
+        "height": "5",
+        "distance_unit": "in",
+        "weight": "2",
+        "mass_unit": "lb"
+    };
+    
+    shippo.shipment.create({
+        "address_from": addressFrom,
+        "address_to": addressTo,
+        "parcels": [parcel],
+        "async": false
+    }, function(err, shipment){
+        // asynchronously called
+        return res.send({
+            status: "success",
+            shipment: shipment
+        })
+    });
 }
 
