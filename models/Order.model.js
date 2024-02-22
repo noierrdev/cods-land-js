@@ -30,6 +30,13 @@ const OrderSchema=new schema({
     status:{
         type:String
     },
+    shipping_info:{
+        type:Object
+    },
+    accepted:{
+        type:Boolean,
+        default:false
+    },
     detail:{
         type:Object
     },

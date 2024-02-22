@@ -253,7 +253,8 @@ exports.saveOrder=(req,res)=>{
             detail:req.body.detail?req.body.detail:null,
             address:req.body.location?req.body.location:"Earth",
             shipingDate: req.body.date,
-            paid:true
+            paid:true,
+            accepted:false,
         });
         newOrder.save()
         .then(async (gotOrder)=>{
@@ -360,6 +361,15 @@ exports.startPayment=async (req,res)=>{
             clientSecret: paymentIntent.client_secret,
         } 
       });
+}
+
+exports.setOrderAccept=(req,res)=>{
+    const order_id=req.body.order_id;
+    models.Order.findByIdAndUpdate(order_id,{accepted:req.body.accepted})
+    .then(()=>{
+        return res.json({status:"success"})
+    })
+    .catch(e=>res.json({status:"error",data:e}))
 }
 
 exports.shipOrder=async (req, res) =>{
