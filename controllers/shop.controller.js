@@ -1,6 +1,6 @@
 const models=require('../models');
 const stripe=require('stripe')(process.env.STRIPE_KEY)
-var shippo = require('shippo')(process.env.Shippo_KEY);
+var shippo = require('shippo')(process.env.SHIPPO_KEY);
 const brevo=require('@getbrevo/brevo');
 const path=require('path')
 const axios =require('axios')
@@ -363,13 +363,73 @@ exports.startPayment=async (req,res)=>{
       });
 }
 
-exports.setOrderAccept=(req,res)=>{
+exports.setOrderAccepted=async (req,res)=>{
     const order_id=req.body.order_id;
-    models.Order.findByIdAndUpdate(order_id,{accepted:req.body.accepted})
-    .then(()=>{
-        return res.json({status:"success"})
-    })
-    .catch(e=>res.json({status:"error",data:e}))
+    if(req.body.accepted){
+        var originalAddressFrom={
+            "name":process.env.SHIPPO_NAME,
+            "company":process.env.SHIPPO_COMPANY,
+            "street1":process.env.SHIPPO_STREET1,
+            "city":process.env.SHIPPO_CITY,
+            "state":process.env.SHIPPO_STATE,
+            "zip":process.env.SHIPPO_ZIP,
+            "country":process.env.SHIPPO_COUNTRY, // iso2 country code
+            "phone":process.env.SHIPPO_PHONE,
+            "email":process.env.EMAIL,
+        };
+        var originalAddressTo={
+            "name": "Mr Hippo",
+            "company": "",
+            "street1": "Queens Lane 3839",
+            "street2": "",
+            "city": "Lynchburg",
+            "state": "Virginia",
+            "zip": "24504",
+            "country": "US",
+            "phone": "+1 555 341 9393",
+            "email": "mrhippo@shippo.com",
+            "metadata": "Hippos dont lie"
+        };
+        var parcel = {
+            "length": "5",
+            "width": "5",
+            "height": "5",
+            "distance_unit": "in",
+            "weight": "2",
+            "mass_unit": "lb"
+        };
+        
+        
+        shippo.shipment.create({
+            "address_from": originalAddressFrom,
+            "address_to": originalAddressTo,
+            "parcels": [parcel],
+            "async": false
+        }, function(err, shipment){
+            // asynchronously called
+            return res.json(shipment)
+            var rate = shipment.rates[0];
+            // return res.json({status:"success",data:rate})
+            // Purchase the desired rate.
+            shippo.transaction.create({
+                "rate": rate.object_id,
+                // "label_file_type": "PDF",
+                "async": false
+            }, function(err, transaction) {
+            // asynchronous callback
+            return res.json({status:"success",data:transaction})
+            });
+            
+        });
+        // var addressFrom  =await shippo.address.create(originalAdressFrom)
+        // console.log(addressFrom)
+        // return res.json({status:"success",data:addressFrom})
+    }
+    // models.Order.findByIdAndUpdate(order_id,{accepted:req.body.accepted})
+    // .then(()=>{
+    //     return res.json({status:"success"})
+    // })
+    // .catch(e=>res.json({status:"error",data:e}))
 }
 
 exports.shipOrder=async (req, res) =>{
