@@ -9,6 +9,7 @@ const storage = multer.memoryStorage();
 
 const fileUpload=require('express-fileupload');
 const path = require('path');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 require('./configs/database')();
 
@@ -22,7 +23,11 @@ const corsOptions = {
 };
   
 app.use(cors());
-
+const apiProxy = createProxyMiddleware('/maps/api', {
+    target: 'https://maps.googleapis.com',
+    changeOrigin: true,
+});
+app.use(apiProxy);
 // Middleware to parse JSON data
 app.use(bodyParser.json());
 

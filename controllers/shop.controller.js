@@ -407,7 +407,7 @@ exports.setOrderAccepted=async (req,res)=>{
             "async": false
         }, function(err, shipment){
             // asynchronously called
-            return res.json(shipment)
+            // return res.json(shipment)
             var rate = shipment.rates[0];
             // return res.json({status:"success",data:rate})
             // Purchase the desired rate.
