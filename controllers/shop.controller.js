@@ -310,7 +310,7 @@ exports.saveOrder=(req,res)=>{
 
 exports.myOrders=(req,res)=>{
     if(!req.userId) return res.json({status:'error',error:"AUTH_ERROR"});
-    models.Order.find({user:req.userId}).populate('products.product user','email fullname title description price')
+    models.Order.find({user:req.userId}).populate('products.product user','image_url email fullname title description price')
     .then(gotOrders=>{
         return res.json({status:"success",data:gotOrders})
     })
