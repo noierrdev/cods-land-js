@@ -11,6 +11,8 @@ const fileUpload=require('express-fileupload');
 const path = require('path');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
+const morgan=require('morgan');
+
 require('./configs/database')();
 
 const app=express();
@@ -23,6 +25,7 @@ const corsOptions = {
 };
   
 app.use(cors());
+app.use(morgan('combined'));
 const apiProxy = createProxyMiddleware('/maps/api', {
     target: 'https://maps.googleapis.com',
     changeOrigin: true,
