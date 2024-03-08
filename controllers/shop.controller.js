@@ -515,3 +515,10 @@ exports.shipOrder=async (req, res) =>{
     });
 }
 
+exports.acceptOrder=(req,res)=>{
+    const order_id=req.body.order;
+    models.Order.findByIdAndUpdate(order_id,{$set:{accepted:true}},{new:true}).
+    then(newOrder=>{
+        return res.json({status:"success"})
+    }).catch(e=>res.json({status:"error",error:e}))
+}

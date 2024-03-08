@@ -28,5 +28,6 @@ router.get('/orders/:order_id', shopController.getOrder)
 router.delete('/orders/:order_id', shopController.deleteOrder);
 router.post('/orders/set-order-accepted', shopController.setOrderAccepted);
 router.post('/shipOrder', shopController.shipOrder);
+router.put('/orders/accept',shopController.acceptOrder);
 
 module.exports=router;
