@@ -255,6 +255,7 @@ exports.saveOrder=(req,res)=>{
             street:req.body.street,
             city:req.body.city,
             state:req.body.state,
+            country:req.body.country,
             zip:req.body.zip,
             shipingDate: req.body.date,
             paid:true,
