@@ -505,7 +505,6 @@ exports.shipOrder=async (req, res) =>{
 exports.acceptOrder=async (req,res)=>{
     const order_id=req.body.order;
     const gotOrder=await models.Order.findById(order_id).populate('user','fullname').exec();
-    console.log(gotOrder)
     var addressFrom  = {
         "name": process.env.SHIPPO_NAME,
         "street1": process.env.SHIPPO_STREET1,
@@ -548,6 +547,7 @@ exports.acceptOrder=async (req,res)=>{
         }
     
         var rate = shipment.rates[9];
+        console.log(rate)
         shippo.transaction.create({
             "rate": rate.object_id,
             "label_file_type": "PDF",
