@@ -546,7 +546,7 @@ exports.acceptOrder=async (req,res)=>{
             });
         }
     
-        var rate = shipment.rates[9];
+        var rate = shipment.rates[2];
         console.log(shipment)
         shippo.transaction.create({
             "rate": rate.object_id,
