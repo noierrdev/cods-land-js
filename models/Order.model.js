@@ -27,13 +27,32 @@ const OrderSchema=new schema({
     address:{
         type:String
     },
-    status:{
+    street:{
+        type:String
+    },
+    city:{
+        type:String
+    },
+    state:{
+        type:String
+    },
+    country:{
+        type:String
+    },
+    zip:{
+        type:String
+    },
+    label:{
         type:String
     },
     shipping_info:{
         type:Object
     },
     accepted:{
+        type:Boolean,
+        default:false
+    },
+    shipped:{
         type:Boolean,
         default:false
     },

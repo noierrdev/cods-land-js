@@ -252,6 +252,10 @@ exports.saveOrder=(req,res)=>{
             price:totalPrice,
             detail:req.body.detail?req.body.detail:null,
             address:req.body.location?req.body.location:"Earth",
+            street:req.body.street,
+            city:req.body.city,
+            state:req.body.state,
+            zip:req.body.zip,
             shipingDate: req.body.date,
             paid:true,
             accepted:false,
@@ -433,40 +437,22 @@ exports.setOrderAccepted=async (req,res)=>{
 }
 
 exports.shipOrder=async (req, res) =>{
-    // var addressFrom  = await shippo.address.create({
-    //     "name":"Shawn Ippotle",
-    //     "company":"Shippo",
-    //     "street1":"215 Clayton St.",
-    //     "city":"San Francisco",
-    //     "state":"CA",
-    //     "zip":"94117",
-    //     "country":"US", // iso2 country code
-    //     "phone":"+1 555 341 9393",
-    //     "email":"shippotle@shippo.com",
-    // })
-    // console.log(addressFrom);
-    // return res.send({
-    //     status:"success",
-    //     data:{
-    //         addressFrom: addressFrom
-    //     }
-    // })
     var addressFrom  = {
-        "name": "Shawn Ippotle",
-        "street1": "215 Clayton St.",
-        "city": "San Francisco",
-        "state": "CA",
-        "zip": "94117",
-        "country": "US"
+        "name": process.env.SHIPPO_NAME,
+        "street1": process.env.STREET1,
+        "city": process.env.CITY,
+        "state": process.env.STATE,
+        "zip": process.env.ZIP,
+        "country": process.env.COUNTRY
     };
     
     var addressTo = {
-        "name": "Mr Hippo",
-        "street1": "Broadway 1",
-        "city": "New York",
-        "state": "NY",
-        "zip": "10007",
-        "country": "US"
+        "name": req.fullname,
+        "street1": req.body.street,
+        "city": req.body.city,
+        "state": req.body.state,
+        "zip": req.body.zip,
+        "country": req.body.country
     };
     
     var parcel = {
@@ -515,10 +501,74 @@ exports.shipOrder=async (req, res) =>{
     });
 }
 
-exports.acceptOrder=(req,res)=>{
+exports.acceptOrder=async (req,res)=>{
     const order_id=req.body.order;
-    models.Order.findByIdAndUpdate(order_id,{$set:{accepted:true}},{new:true}).
-    then(newOrder=>{
-        return res.json({status:"success"})
-    }).catch(e=>res.json({status:"error",error:e}))
+    const gotOrder=await models.Order.findById(order_id).populate('user','fullname');
+    var addressFrom  = {
+        "name": process.env.SHIPPO_NAME,
+        "street1": process.env.STREET1,
+        "city": process.env.CITY,
+        "state": process.env.STATE,
+        "zip": process.env.ZIP,
+        "country": process.env.COUNTRY
+    };
+    
+    var addressTo = {
+        "name": gotOrder.user.fullname,
+        "street1": gotOrder.street,
+        "city": gotOrder.city,
+        "state": gotOrder.state,
+        "zip": gotOrder.zip,
+        "country": gotOrder.country
+    };
+    
+    var parcel = {
+        "length": "5",
+        "width": "5",
+        "height": "5",
+        "distance_unit": "in",
+        "weight": "2",
+        "mass_unit": "lb"
+    };
+    
+    shippo.shipment.create({
+        "address_from": addressFrom,
+        "address_to": addressTo,
+        "parcels": [parcel],
+        "async": false
+    }, function(err, shipment){
+        if (err) {
+            console.error("Error creating shipment:", err);
+            return res.status(500).send({
+                status: "error",
+                message: "Error creating shipment"
+            });
+        }
+    
+        var rate = shipment.rates[9];
+        shippo.transaction.create({
+            "rate": rate.object_id,
+            "label_file_type": "PDF",
+            "async": false
+        }, function(err, transaction) {
+            if (err) {
+                console.error("Error creating transaction:", err);
+                return res.status(500).send({
+                    status: "error",
+                    message: "Error creating transaction"
+                });
+            }
+            
+            models.Order.findByIdAndUpdate(order_id,{$set:{accepted:true,shipping_info:transaction}},{new:true}).
+            then(newOrder=>{
+                return res.send({
+                    status: "success",
+                    transaction: transaction,
+                    shipment: shipment
+                });
+            }).catch(e=>res.json({status:"error",error:e}))
+            
+        });
+    });
+    
 }
