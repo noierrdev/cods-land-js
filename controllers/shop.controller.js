@@ -506,11 +506,11 @@ exports.acceptOrder=async (req,res)=>{
     const gotOrder=await models.Order.findById(order_id).populate('user','fullname').exec();
     var addressFrom  = {
         "name": process.env.SHIPPO_NAME,
-        "street1": process.env.STREET1,
-        "city": process.env.CITY,
-        "state": process.env.STATE,
-        "zip": process.env.ZIP,
-        "country": process.env.COUNTRY
+        "street1": process.env.SHIPPO_STREET1,
+        "city": process.env.SHIPPO_CITY,
+        "state": process.env.SHIPPO_STATE,
+        "zip": process.env.SHIPPO_ZIP,
+        "country": process.env.SHIPPO_COUNTRY
     };
     
     var addressTo = {
