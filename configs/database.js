@@ -4,7 +4,7 @@ const Grid = require('gridfs-stream');
 
 module.exports=()=>{
     // Connect to MongoDB
-    const MONGODB_URI=`mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@localhost:27017/codsland`;
+    const MONGODB_URI=`mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@64.23.176.68:27017/codsland`;
     mongoose.connect(MONGODB_URI, {});
     
     const db = mongoose.connection;
