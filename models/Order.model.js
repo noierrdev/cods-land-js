@@ -45,6 +45,9 @@ const OrderSchema=new schema({
     label:{
         type:String
     },
+    phone:{
+        type:String
+    },
     shipping_info:{
         type:Object
     },

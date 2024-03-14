@@ -256,6 +256,7 @@ exports.saveOrder=(req,res)=>{
             city:req.body.city,
             state:req.body.state,
             country:req.body.country,
+            phone:req.body.phone,
             zip:req.body.zip,
             shipingDate: req.body.date,
             paid:true,
@@ -511,16 +512,18 @@ exports.acceptOrder=async (req,res)=>{
         "city": process.env.SHIPPO_CITY,
         "state": process.env.SHIPPO_STATE,
         "zip": process.env.SHIPPO_ZIP,
-        "country": process.env.SHIPPO_COUNTRY
+        "country": process.env.SHIPPO_COUNTRY,
+        "phone":process.env.SHIPPO_PHONE,
     };
     
     var addressTo = {
         "name": gotOrder.user.fullname,
-        "street1": gotOrder.street,
-        "city": gotOrder.city,
-        "state": gotOrder.state,
-        "zip": gotOrder.zip,
-        "country": gotOrder.country
+        "street1": gotOrder.street&&gotOrder.street,
+        "city": gotOrder.city&&gotOrder.city,
+        "state": gotOrder.state&&gotOrder.state,
+        "zip": gotOrder.zip&&gotOrder.zip,
+        "country": gotOrder.country&&gotOrder.country,
+        "phone":gotOrder.phone&&gotOrder.phone
     };
     
     var parcel = {
