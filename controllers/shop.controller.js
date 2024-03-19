@@ -577,3 +577,133 @@ exports.acceptOrder=async (req,res)=>{
     });
     
 }
+exports.getShipment=(req,res)=>{
+    var addressFrom  = {
+        "name": process.env.SHIPPO_NAME,
+        "street1": process.env.SHIPPO_STREET1,
+        "city": process.env.SHIPPO_CITY,
+        "state": process.env.SHIPPO_STATE,
+        "zip": process.env.SHIPPO_ZIP,
+        "country": process.env.SHIPPO_COUNTRY,
+        "phone":process.env.SHIPPO_PHONE,
+    };
+    
+    var addressTo = {
+        "name": req.fullname,
+        "street1": req.body.street,
+        "city": req.body.city,
+        "state": req.body.state,
+        "zip": req.body.zip,
+        "country": req.body.county,
+        "phone":req.body.phone
+    };
+    
+    var parcel = {
+        "length": "5",
+        "width": "5",
+        "height": "5",
+        "distance_unit": "in",
+        "weight": "2",
+        "mass_unit": "lb"
+    };
+    
+    shippo.shipment.create({
+        "address_from": addressFrom,
+        "address_to": addressTo,
+        "parcels": [parcel],
+        "async": false
+    }, function(err, shipment){
+        if (err) {
+            console.error("Error creating shipment:", err);
+            return res.status(500).send({
+                status: "error",
+                message: "Error creating shipment"
+            });
+        }
+        return res.json({status:"success",data:shipment})
+    });
+}
+
+exports.saveOrderWithShipment=(req,res)=>{
+    if(!req.userId) return res.json({status:'error',error:"AUTH_ERROR"});
+    models.CartProduct.find({user:req.userId},{_id:true,product:true,count:true}).populate('product').lean().exec()
+    .then(gotCartProducts=>{
+        if(gotCartProducts==[]) return res.json({status:"error",error:"EMPTY_CART"})
+        var orderProducts=[];
+        var totalPrice=0;
+        gotCartProducts.forEach((oneCartProduct)=>{
+            orderProducts.push({
+                product:oneCartProduct.product,
+                count:oneCartProduct.count
+            });
+            totalPrice+=oneCartProduct.product.price*oneCartProduct.count
+        });
+        const newOrder=new models.Order({
+            user:req.userId,
+            products:orderProducts,
+            price:totalPrice,
+            detail:req.body.detail?req.body.detail:null,
+            address:req.body.location?req.body.location:"Earth",
+            street:req.body.street,
+            city:req.body.city,
+            state:req.body.state,
+            country:req.body.country,
+            phone:req.body.phone,
+            zip:req.body.zip,
+            shipingDate: req.body.date,
+            paid:true,
+            accepted:false,
+            shipping_info:req.body.shipment
+        });
+        newOrder.save()
+        .then(async (gotOrder)=>{
+            // console.log(gotOrder);
+            await models.CartProduct.deleteMany({user:req.userId});
+            // return res.json({status:"success"})
+            // let defaultClient = brevo.ApiClient.instance;
+            // let apiKey = defaultClient.authentications['api-key'];
+            // apiKey.apiKey = process.env.BREVO_KEY;
+            // let apiInstance = new brevo.TransactionalEmailsApi();
+            // let sendSmtpEmail = new brevo.SendSmtpEmail();
+            // sendSmtpEmail.subject = "New Order Arrived from "+req.email;
+            // sendSmtpEmail.htmlContent = `
+            // <html>
+            //     <body>
+            //         <h2>New order arrived form ${req.email}</h2>
+            //         <h2>The Id of new order is ${gotOrder._id}</h2>
+            //         <h2>The address of buyer is ${req.body.location}</h2>
+            //         ${
+            //             gotCartProducts.map((oneProduct)=>{
+            //                 return '<h3>'+oneProduct.product.title+'('+oneProduct.product._id+')'+' X '+oneProduct.count+'</h3>'
+            //             })
+            //         }
+            //         <a href="http://188.215.92.120:3001/" ><h2>Cods.Land-shopping-admin</h2></a>
+            //     </body>
+            // </html>`;
+            // sendSmtpEmail.sender = { "name": "Cods.Land", "email": "info@cods.land" };
+            // sendSmtpEmail.to = [
+
+            //     {
+            //         "email": "noierrdev@proton.me", "name": "Vander Moleker"
+            //     },
+            //     {
+            //         "email": "ncrdean@gmail.com", "name": "Dean Howell"
+            //     },
+            //     {
+            //         "email": "dean@cods.land", "name": "Dean Howell"
+            //     }
+            // ];
+            // sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+            // sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" };
+
+
+            // apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+            //     return res.json({ status: "success", data: data });
+            // }, function (error) {
+            //     return res.json({ status: "error",error:error });
+            // });
+            return res.json({ status: "success" });
+        })
+        .catch(e=>res.json({status:"error",error:"SAVE_FAILED"}))
+    })
+}
