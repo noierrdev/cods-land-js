@@ -302,10 +302,9 @@ exports.saveOrder=(req,res)=>{
                 "async": false
             }, function(err, shipment){
                 if (err) {
-                    console.error("Error creating shipment:", err);
                     return res.status(500).send({
                         status: "error",
-                        message: "Error creating shipment"
+                        message: err
                     });
                 }
                 return res.json({status:"success",data:shipment})
