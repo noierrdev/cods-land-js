@@ -307,7 +307,10 @@ exports.saveOrder=(req,res)=>{
                         message: err
                     });
                 }
-                return res.json({status:"success",data:shipment})
+                return res.json({status:"success",data:{
+                    ...shipment,
+                    order_id:gotOrder._id
+                }})
             });
             // return res.json({status:"success"})
             // let defaultClient = brevo.ApiClient.instance;
