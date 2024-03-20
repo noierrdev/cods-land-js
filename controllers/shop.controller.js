@@ -282,7 +282,7 @@ exports.saveOrder=(req,res)=>{
                 "city": req.body.city,
                 "state": req.body.state,
                 "zip": req.body.zip,
-                "country": req.body.county,
+                "country": req.body.country,
                 "phone":req.body.phone
             };
             
@@ -637,7 +637,7 @@ exports.getShipment=(req,res)=>{
         "city": req.body.city,
         "state": req.body.state,
         "zip": req.body.zip,
-        "country": req.body.county,
+        "country": req.body.country,
         "phone":req.body.phone
     };
     
