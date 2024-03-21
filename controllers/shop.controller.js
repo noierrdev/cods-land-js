@@ -658,7 +658,7 @@ exports.acceptOrder=async (req,res)=>{
             }
             
             models.Order.findByIdAndUpdate(order_id,{$set:{accepted:true,shipping_info:transaction}},{new:true}).
-            then(newOrder=>{
+            then(()=>{
                 return res.send({
                     status: "success",
                     transaction: transaction,
@@ -756,4 +756,39 @@ exports.saveOrderWithShipment=(req,res)=>{
         })
         .catch(e=>res.json({status:"error",error:"SAVE_FAILED"}))
     })
+}
+exports.selectShipmentRate=(req,res)=>{
+    const rate=req.body.rate;
+    const order_id=req.body.order_id;  
+    models.Order.findByIdAndUpdate(order_id,{$set:{shipping_info:rate}})
+    .then(()=>{
+        return res.json({status:"success"})
+    }).catch((err)=>res.json({status:"error",error:err}))  
+};
+
+exports.sendShippingRequest=(req,res)=>{
+    const order_id=req.body.order_id;
+    models.Order.findById(order_id)
+    .then(gotOrder=>{
+        if(!gotOrder.shipping_info) return res.json({status:"error",error:"NO_SELECTED_SHIPMENT_RATE"});
+        shippo.transaction.create({
+            "rate": gotOrder.shipping_info.object_id,
+            "label_file_type": "PDF",
+            "async": false
+        }, function(err, transaction) {
+            if (err) {
+                console.error("Error creating transaction:", err);
+                return res.status(500).send({
+                    status: "error",
+                    message: "Error creating transaction"
+                });
+            }
+            models.Order.findByIdAndUpdate(order_id,{$set:{shipping_info:transaction,accepted:true}})
+            .then(()=>{
+                return res.json({status:"success",data:transaction})
+            }).catch((err)=>res.json({status:"error",error:err}))  
+            // return res.json({status:"success"})
+        })
+    })
+    .catch(e=>res.json({status:"error",error:err}))
 }
