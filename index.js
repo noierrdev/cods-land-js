@@ -26,7 +26,7 @@ const corsOptions = {
   
 app.use(cors());
 app.use(morgan('combined'));
-const apiProxy = createProxyMiddleware('/maps/api', {
+const apiProxy = createProxyMiddleware('/api/maps/api', {
     target: 'https://maps.googleapis.com',
     changeOrigin: true,
 });
