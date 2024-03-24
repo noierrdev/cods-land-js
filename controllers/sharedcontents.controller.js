@@ -139,3 +139,21 @@ exports.sendContentMedia=(req,res)=>{
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
+
+exports.pageContents=(req,res)=>{
+    const page=req.body.page;
+    const pagesize=req.body.pagesize;
+    models.SharedContent.find({}).skip(page*pagesize).limit(pagesize).populate("author category","fullname title")
+    .then(async gotContents=>{
+        const totalNumbers=await models.SharedContent.countDocuments().lean().exec();
+        const total=Math.ceil(totalNumbers/pagesize);
+        return res.json({status:"success",data:{
+            pagedata:gotContents,
+            page,
+            pagesize,
+            totalNumbers,
+            total
+        }})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
