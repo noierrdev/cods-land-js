@@ -143,7 +143,7 @@ exports.sendContentMedia=(req,res)=>{
 exports.pageContents=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.SharedContent.find({}).skip(page*pagesize).sort({createdAt:-1}).limit(pagesize).populate("author category","fullname title")
+    models.SharedContent.find({}).skip(page*pagesize).sort({createdAt:-1}).limit(pagesize).populate("author category","fullname email title")
     .then(async gotContents=>{
         const totalNumbers=await models.SharedContent.countDocuments().lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
