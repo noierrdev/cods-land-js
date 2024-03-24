@@ -507,7 +507,7 @@ exports.acceptOrder=async (req,res)=>{
 exports.selectShipmentRate=(req,res)=>{
     const rate=req.body.rate;
     const order_id=req.body.order_id;  
-    models.Order.findByIdAndUpdate(order_id,{$set:{shiprate:rate}})
+    models.Order.findByIdAndUpdate(order_id,{$set:{shipping_rate:rate}})
     .then(()=>{
         return res.json({status:"success"})
     }).catch((err)=>res.json({status:"error",error:err}))  
@@ -519,7 +519,7 @@ exports.sendShippingRequest=(req,res)=>{
     .then(gotOrder=>{
         if(!gotOrder.shiprate) return res.json({status:"error",error:"NO_SELECTED_SHIPMENT_RATE"});
         shippo.transaction.create({
-            "rate": gotOrder.shiprate.object_id,
+            "rate": gotOrder.shipping_rate.object_id,
             "label_file_type": "PDF",
             "async": false
         }, function(err, transaction) {
