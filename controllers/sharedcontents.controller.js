@@ -55,9 +55,10 @@ exports.deleteContent= (req,res)=>{
     // if(!req.superuser) return res.json({status:"error",error:"ACCESS_DENIED"})
     const contentId=req.params.id;
     models.SharedContent.findByIdAndDelete(contentId)
-    .then(async ()=>{
+    .then(async (gotContent)=>{
         await models.Like.deleteMany({content:contentId});
         await models.Share.deleteMany({content:contentId});
+        if(gotContent.media) await fs.unlinkSync(path.resolve(__dirname,"../temp",gotContent.media.md5));
         res.json({status:"success"})
     })
     .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
@@ -149,6 +150,24 @@ exports.pageContents=(req,res)=>{
         const total=Math.ceil(totalNumbers/pagesize);
         return res.json({status:"success",data:{
             pagedata:gotContents,
+            page,
+            pagesize,
+            totalNumbers,
+            total
+        }})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.pageCategories=(req,res)=>{
+    const page=req.body.page;
+    const pagesize=req.body.pagesize;
+    models.SharedContentCategory.find({}).skip(page*pagesize).sort({createdAt:-1}).limit(pagesize)
+    .then(async gotCategories=>{
+        const totalNumbers=await models.SharedContentCategory.countDocuments().lean().exec();
+        const total=Math.ceil(totalNumbers/pagesize);
+        return res.json({status:"success",data:{
+            pagedata:gotCategories,
             page,
             pagesize,
             totalNumbers,
