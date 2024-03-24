@@ -51,6 +51,12 @@ const OrderSchema=new schema({
     shipping_info:{
         type:Object
     },
+    shipping_rate:{
+        type:Object
+    },
+    shipping_transaction:{
+        type:Object
+    },
     accepted:{
         type:Boolean,
         default:false
