@@ -98,7 +98,7 @@ exports.shareContent=async (req,res)=>{
     .catch(e=>res.json({status:"error",error:'DB_ERROR'}))
 };
 exports.allContents=(req,res)=>{
-    return models.SharedContent.find().populate('author category','email fullname title')
+    return models.SharedContent.find().sort({createdAt:-1}).populate('author category','email fullname title')
     .then(gotContents=>{
         return res.json({status:"success",data:gotContents});
     })
