@@ -324,7 +324,7 @@ exports.saveOrder=(req,res)=>{
                                 return '<h3>'+oneProduct.product.title+'('+oneProduct.product._id+')'+' X '+oneProduct.count+'</h3>'
                             })
                         }
-                        <a href="http://188.215.92.120:3001/" ><h2>Cods.Land-shopping-admin</h2></a>
+                        <a href="http://cods.land:3001/" ><h2>Cods.Land-shopping-admin</h2></a>
                     </body>
                 </html>`;
                 sendSmtpEmail.sender = { "name": "Cods.Land", "email": "info@cods.land" };
@@ -419,131 +419,8 @@ exports.startPayment=async (req,res)=>{
       });
 }
 
-exports.setOrderAccepted=async (req,res)=>{
-    const order_id=req.body.order_id;
-    if(req.body.accepted){
-        var originalAddressFrom={
-            "name":process.env.SHIPPO_NAME,
-            "company":process.env.SHIPPO_COMPANY,
-            "street1":process.env.SHIPPO_STREET1,
-            "city":process.env.SHIPPO_CITY,
-            "state":process.env.SHIPPO_STATE,
-            "zip":process.env.SHIPPO_ZIP,
-            "country":process.env.SHIPPO_COUNTRY, // iso2 country code
-            "phone":process.env.SHIPPO_PHONE,
-            "email":process.env.EMAIL,
-        };
-        var originalAddressTo={
-            "name": "Mr Hippo",
-            "company": "",
-            "street1": "Queens Lane 3839",
-            "street2": "",
-            "city": "Lynchburg",
-            "state": "Virginia",
-            "zip": "24504",
-            "country": "US",
-            "phone": "+1 555 341 9393",
-            "email": "mrhippo@shippo.com",
-            "metadata": "Hippos dont lie"
-        };
-        var parcel = {
-            "length": "5",
-            "width": "5",
-            "height": "5",
-            "distance_unit": "in",
-            "weight": "2",
-            "mass_unit": "lb"
-        };
-        
-        
-        shippo.shipment.create({
-            "address_from": originalAddressFrom,
-            "address_to": originalAddressTo,
-            "parcels": [parcel],
-            "async": false
-        }, function(err, shipment){
-            // asynchronously called
-            // return res.json(shipment)
-            var rate = shipment.rates[0];
-            // return res.json({status:"success",data:rate})
-            // Purchase the desired rate.
-            shippo.transaction.create({
-                "rate": rate.object_id,
-                // "label_file_type": "PDF",
-                "async": false
-            }, function(err, transaction) {
-            // asynchronous callback
-            return res.json({status:"success",data:transaction})
-            });
-            
-        });
-    }
-}
 
-exports.shipOrder=async (req, res) =>{
-    var addressFrom  = {
-        "name": process.env.SHIPPO_NAME,
-        "street1": process.env.STREET1,
-        "city": process.env.CITY,
-        "state": process.env.STATE,
-        "zip": process.env.ZIP,
-        "country": process.env.COUNTRY
-    };
-    
-    var addressTo = {
-        "name": req.fullname,
-        "street1": req.body.street,
-        "city": req.body.city,
-        "state": req.body.state,
-        "zip": req.body.zip,
-        "country": req.body.country
-    };
-    
-    var parcel = {
-        "length": "5",
-        "width": "5",
-        "height": "5",
-        "distance_unit": "in",
-        "weight": "2",
-        "mass_unit": "lb"
-    };
-    
-    shippo.shipment.create({
-        "address_from": addressFrom,
-        "address_to": addressTo,
-        "parcels": [parcel],
-        "async": false
-    }, function(err, shipment){
-        if (err) {
-            console.error("Error creating shipment:", err);
-            return res.status(500).send({
-                status: "error",
-                message: "Error creating shipment"
-            });
-        }
-    
-        var rate = shipment.rates[9];
-        shippo.transaction.create({
-            "rate": rate.object_id,
-            "label_file_type": "PDF",
-            "async": false
-        }, function(err, transaction) {
-            if (err) {
-                console.error("Error creating transaction:", err);
-                return res.status(500).send({
-                    status: "error",
-                    message: "Error creating transaction"
-                });
-            }
-    
-            return res.send({
-                status: "success",
-                transaction: transaction,
-                shipment: shipment
-            });
-        });
-    });
-}
+
 
 exports.acceptOrder=async (req,res)=>{
     const order_id=req.body.order;
@@ -619,93 +496,9 @@ exports.acceptOrder=async (req,res)=>{
     });
     
 }
-exports.getShipment=(req,res)=>{
-    var addressFrom  = {
-        "name": process.env.SHIPPO_NAME,
-        "street1": process.env.SHIPPO_STREET1,
-        "city": process.env.SHIPPO_CITY,
-        "state": process.env.SHIPPO_STATE,
-        "zip": process.env.SHIPPO_ZIP,
-        "country": process.env.SHIPPO_COUNTRY,
-        "phone":process.env.SHIPPO_PHONE,
-    };
-    
-    var addressTo = {
-        "name": req.fullname,
-        "street1": req.body.street,
-        "city": req.body.city,
-        "state": req.body.state,
-        "zip": req.body.zip,
-        "country": req.body.country,
-        "phone":req.body.phone
-    };
-    
-    var parcel = {
-        "length": "5",
-        "width": "5",
-        "height": "5",
-        "distance_unit": "in",
-        "weight": "2",
-        "mass_unit": "lb"
-    };
-    
-    shippo.shipment.create({
-        "address_from": addressFrom,
-        "address_to": addressTo,
-        "parcels": [parcel],
-        "async": false
-    }, function(err, shipment){
-        if (err) {
-            console.error("Error creating shipment:", err);
-            return res.status(500).send({
-                status: "error",
-                message: "Error creating shipment"
-            });
-        }
-        return res.json({status:"success",data:shipment})
-    });
-}
 
-exports.saveOrderWithShipment=(req,res)=>{
-    if(!req.userId) return res.json({status:'error',error:"AUTH_ERROR"});
-    models.CartProduct.find({user:req.userId},{_id:true,product:true,count:true}).populate('product').lean().exec()
-    .then(gotCartProducts=>{
-        if(gotCartProducts==[]) return res.json({status:"error",error:"EMPTY_CART"})
-        var orderProducts=[];
-        var totalPrice=0;
-        gotCartProducts.forEach((oneCartProduct)=>{
-            orderProducts.push({
-                product:oneCartProduct.product,
-                count:oneCartProduct.count
-            });
-            totalPrice+=oneCartProduct.product.price*oneCartProduct.count
-        });
-        const newOrder=new models.Order({
-            user:req.userId,
-            products:orderProducts,
-            price:totalPrice,
-            detail:req.body.detail?req.body.detail:null,
-            address:req.body.location?req.body.location:"Earth",
-            street:req.body.street,
-            city:req.body.city,
-            state:req.body.state,
-            country:req.body.country,
-            phone:req.body.phone,
-            zip:req.body.zip,
-            shipingDate: req.body.date,
-            paid:true,
-            accepted:false,
-            shipping_info:req.body.shipment
-        });
-        newOrder.save()
-        .then(async (gotOrder)=>{
-            // console.log(gotOrder);
-            await models.CartProduct.deleteMany({user:req.userId});
-            return res.json({ status: "success" });
-        })
-        .catch(e=>res.json({status:"error",error:"SAVE_FAILED"}))
-    })
-}
+
+
 exports.selectShipmentRate=(req,res)=>{
     const rate=req.body.rate;
     const order_id=req.body.order_id;  
