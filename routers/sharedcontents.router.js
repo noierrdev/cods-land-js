@@ -5,6 +5,8 @@ router.get('/all',sharedcontentsController.allContents);
 router.post('/page',sharedcontentsController.pageContents);
 router.get('/categories',sharedcontentsController.allCategories);
 router.post('/categories',sharedcontentsController.saveCategory);
+router.post('/categories/page',sharedcontentsController.pageCategories);
+router.delete('/categories/:id',sharedcontentsController.deleteCategory);
 router.get('/media/:id',sharedcontentsController.sendContentMedia);
 router.get('/:id',sharedcontentsController.getContent);
 router.delete('/:id',sharedcontentsController.deleteContent);
