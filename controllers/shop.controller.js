@@ -514,7 +514,7 @@ exports.selectShipmentRate=(req,res)=>{
 };
 
 exports.sendShippingRequest=(req,res)=>{
-    const order_id=req.body.order_id;
+    const order_id=req.body.order;
     models.Order.findById(order_id)
     .then(gotOrder=>{
         if(!gotOrder.shiprate) return res.json({status:"error",error:"NO_SELECTED_SHIPMENT_RATE"});
