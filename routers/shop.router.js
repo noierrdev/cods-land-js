@@ -30,5 +30,6 @@ router.post('/orders/accept',shopController.acceptOrder);
 
 router.put('/orders/shipment',shopController.selectShipmentRate);
 router.put('/orders/accept',shopController.sendShippingRequest);
+router.post('/orders/purchase',shopController.purchase);
 
 module.exports=router;
