@@ -68,6 +68,9 @@ const OrderSchema=new schema({
     detail:{
         type:Object
     },
+    purchase_info:{
+        type:Object
+    },
     shipingDate:{
         type:Date,
     }

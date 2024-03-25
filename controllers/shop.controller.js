@@ -538,3 +538,12 @@ exports.sendShippingRequest=(req,res)=>{
     })
     .catch(e=>res.json({status:"error",error:err}))
 }
+
+exports.purchase=(req,res)=>{
+    const order_id=req.body.order;
+    models.Order.findByIdAndUpdate(order_id,{$set:{purchase_info:req.body}})
+    .then(()=>{
+        return res.json({status:"success"})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
