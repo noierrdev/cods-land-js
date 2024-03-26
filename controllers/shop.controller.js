@@ -550,7 +550,7 @@ exports.sendShippingRequest=(req,res)=>{
     const order_id=req.body.order;
     models.Order.findById(order_id)
     .then(gotOrder=>{
-        if(!gotOrder.shiprate) return res.json({status:"error",error:"NO_SELECTED_SHIPMENT_RATE"});
+        if(!gotOrder.shipping_rate) return res.json({status:"error",error:"NO_SELECTED_SHIPMENT_RATE"});
         shippo.transaction.create({
             "rate": gotOrder.shipping_rate.object_id,
             "label_file_type": "PDF",
