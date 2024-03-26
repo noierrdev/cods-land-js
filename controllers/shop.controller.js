@@ -21,7 +21,7 @@ exports.saveCategory=(req, res)=>{
 exports.pageCategories=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.ProductCategory.find({}).skip(page*pagesize).limit(pagesize)
+    models.ProductCategory.find({}).sort({title:1}).skip(page*pagesize).limit(pagesize)
     .then(async gotProductCategories=>{
         const totalNumbers=await models.ProductCategory.countDocuments().lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
@@ -183,7 +183,7 @@ exports.categoryPage=(req,res)=>{
     const category=req.params.category_id;
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Product.find({category:category}).sort({title:1}).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
+    models.Product.find({category:category}).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
     .then(async gotProducts=>{
         const totalNumbers=await models.Product.countDocuments({category:category}).skip(page*pagesize).limit(pagesize).lean().exec()
         const total=Math.ceil(totalNumbers);
