@@ -42,7 +42,7 @@ exports.deleteCategory=(req,res)=>{
     .catch(e=>res.json({status:"error"}))
 }
 exports.allCategories=(req,res)=>{
-    models.ProductCategory.find()
+    models.ProductCategory.find().sort({title:1})
     .then(gotCategories=>res.json({status:"success",data:gotCategories}))
     .catch(e=>res.json({status:"error",error:e}))
 }

@@ -61,6 +61,9 @@ const ProductSchema=new schema({
     category3:{
         type:String
     },
+    width:{
+        type:Number,
+    },
     weight:{
         type:Number,
     },
