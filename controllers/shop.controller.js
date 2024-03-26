@@ -563,6 +563,7 @@ exports.sendShippingRequest=(req,res)=>{
                     message: "Error creating transaction"
                 });
             }
+            if(transaction.status!="SUCCESS") return res.json({status:"error",data:transaction})
             models.Order.findByIdAndUpdate(order_id,{$set:{shipping_transaction:transaction,accepted:true}})
             .then(()=>{
                 return res.json({status:"success",data:transaction})
