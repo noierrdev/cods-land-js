@@ -62,7 +62,7 @@ const ProductSchema=new schema({
         type:String
     },
     weight:{
-        type:Number
+        type:Number,
     },
     length:{
         type:Number
