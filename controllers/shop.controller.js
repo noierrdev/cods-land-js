@@ -78,7 +78,14 @@ exports.productsPage=(req,res)=>{
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
-
+exports.editProduct=(req,res)=>{
+    const {id, ...others}=req.body;
+    models.Product.findByIdAndUpdate(id,{$set:{...others}})
+    .then(()=>{
+        return res.json({status:"success"})
+    })
+    .catch((e)=>res.json({status:"error",error:e}))
+}
 const getMegaSession=async (fileObj)=>{
     try {
         // Create a new Storage instance and wait for it to be ready

@@ -11,6 +11,7 @@ router.post('/categories/page', shopController.pageCategories)
 router.delete('/categories/:category_id', shopController.deleteCategory);
 router.post('/categories/:category_id/products/page', shopController.categoryPage);
 router.post('/products', shopController.saveProduct);
+router.put('/products', shopController.editProduct);
 router.post('/products/page', shopController.productsPage);
 router.get('/products/:product_id/image', shopController.productImage)
 router.delete('/products/:product_id', shopController.deleteProduct)
