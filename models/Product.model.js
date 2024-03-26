@@ -8,7 +8,23 @@ const ProductSchema=new schema({
     },
     category:{
         type:schema.ObjectId,
-        ref:'ProductCategory'
+        ref:'ProductCategory',
+        default:null
+    },
+    category_1:{
+        type:schema.ObjectId,
+        ref:'ProductCategory',
+        default:null,
+    },
+    category_2:{
+        type:schema.ObjectId,
+        ref:'ProductCategory',
+        default:null,
+    },
+    category_3:{
+        type:schema.ObjectId,
+        ref:'ProductCategory',
+        default:null,
     },
     description:{
         type:String
@@ -32,6 +48,10 @@ const ProductSchema=new schema({
     count:{
         type:Number
     },
+    public:{
+        type:Boolean,
+        default:false
+    },
     category1:{
         type:String
     },
@@ -40,7 +60,17 @@ const ProductSchema=new schema({
     },
     category3:{
         type:String
-    }
+    },
+    weight:{
+        type:Number
+    },
+    length:{
+        type:Number
+    },
+    height:{
+        type:Number
+    },
+    
 },
 {
     timestamps: true,

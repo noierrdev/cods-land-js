@@ -49,7 +49,7 @@ exports.allCategories=(req,res)=>{
 exports.productsPage=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Product.find({},{title:true,image_url:true,description:true,createdAt:true,price:true,count:true,}).skip(page*pagesize).limit(pagesize).populate('category','title')
+    models.Product.find({},{title:true,image_url:true,description:true,createdAt:true,price:true,count:true,}).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
     .then(async gotProducts=>{
         const totalNumbers=await models.Product.countDocuments().lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
@@ -93,6 +93,9 @@ exports.saveProduct=async (req,res)=>{
     const price=req.body.price;
     const image=req.files?req.files.image:null;
     const category=req.body.category;
+    const category_1=req.body.category_1;
+    const category_2=req.body.category_2;
+    const category_3=req.body.category_3;
     const video=req.files?req.files.video:null
     // await getMegaSession(image)
     if(video){
@@ -120,6 +123,9 @@ exports.saveProduct=async (req,res)=>{
             title:title,
             description:description,
             category:category?category:null,
+            category_1:category_1?category_1:null,
+            category_2:category_2?category_2:null,
+            category_3:category_3?category_3:null,
             price:price,
             detail:req.body.detail?req.body.detail:null,
             image:image?image:null,
@@ -134,14 +140,14 @@ exports.saveProduct=async (req,res)=>{
 
 exports.getProduct=(req,res)=>{
     const product=req.params.product_id;
-    models.Product.findById(product).populate('category')
+    models.Product.findById(product).populate('category category_1 category_2 category_3','title')
     .then(gotProduct=>res.json({status:"success",data:gotProduct}))
     .catch(e=>res.json({status:"error",error:e}))
 }
 
 exports.deleteProduct=(req,res)=>{
     const product=req.params.product_id;
-    models.Product.findByIdAndDelete(product).populate('category')
+    models.Product.findByIdAndDelete(product)
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:e}))
 }
@@ -150,7 +156,7 @@ exports.categoryPage=(req,res)=>{
     const category=req.params.category_id;
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Product.find({category:category}).skip(page*pagesize).limit(pagesize).populate('category')
+    models.Product.find({category:category}).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
     .then(async gotProducts=>{
         const totalNumbers=await models.Product.countDocuments({category:category}).skip(page*pagesize).limit(pagesize).lean().exec()
         const total=Math.ceil(totalNumbers);
