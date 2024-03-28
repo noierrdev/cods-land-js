@@ -10,4 +10,8 @@ router.use('/shop', require('./shop.router'))
 router.use('/test',require('./test.router'))
 router.use('/admin',require('./admin.router'))
 
+///////////////////////
+router.use('/grander',require('../apps/grander/routers'));
+////////////////////////
+
 module.exports=router;
