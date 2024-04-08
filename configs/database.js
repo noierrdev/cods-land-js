@@ -8,7 +8,9 @@ module.exports=()=>{
     mongoose.connect(MONGODB_URI, {});
     
     const db = mongoose.connection;
-    require('../models')
+    require('../models');
+    /////////////////////
+    require("../apps/grander/models")
     // Handle MongoDB connection events
     db.on('error', console.error.bind(console, 'MongoDB connection error:'));
     db.once('open', () => {
