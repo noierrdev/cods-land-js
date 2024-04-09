@@ -99,7 +99,14 @@ exports.updateGranderProduct=(req,res)=>{
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:e}))
 }
-
+exports.getGranderProduct=(req,res)=>{
+    const id=req.params.id;
+    grander_models.GranderProduct.findById(id)
+    .then(gotProduct=>{
+        return res.json({status:'success',data:gotProduct})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
 
 
 exports.saveOrder=(req,res)=>{
@@ -110,7 +117,7 @@ exports.saveGranderOrder=(req,res)=>{
 }
 
 exports.deleteGranderOrder=(req,res)=>{
-    
+
 }
 
 exports.selectShippingRate=(req,res)=>{
