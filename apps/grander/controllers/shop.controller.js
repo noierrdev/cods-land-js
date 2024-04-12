@@ -1,9 +1,14 @@
 const models=require("../../../models");
 const grander_models=require("../models");
+const stripe=require('stripe')(process.env.STRIPE_KEY)
+var shippo = require('shippo')(process.env.SHIPPO_KEY);
+const path=require('path')
+
+
 exports.pageProducts=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Product.find({public:true},{
+    models.Product.find({},{
         title:true,
         image_url:true,
         description:true,
@@ -20,7 +25,7 @@ exports.pageProducts=(req,res)=>{
         weight:true
     }).skip(page*pagesize).limit(pagesize).populate("category_1 category_2 category_3","title")
     .then(async gotProducts=>{
-        const totalNumbers=await models.Product.countDocuments({public:true}).lean().exec();
+        const totalNumbers=await models.Product.countDocuments({}).lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
         return res.json({status:"success",data:{
             pagedata:gotProducts,
@@ -62,7 +67,7 @@ exports.saveGranderProduct=(req,res)=>{
     const sugg_retail=req.body.sugg_retail;
     const reseller_price=req.body.reseller_price;
     const image_url=req.body.image_url;
-    const image=req.body.image;
+    const image=req.files?req.files.image:null;
     const product_no=req.body.product_no;
     const category=req.body.category;
     const public=req.body.public;
@@ -108,9 +113,23 @@ exports.getGranderProduct=(req,res)=>{
     .catch(e=>res.json({status:"error",error:e}))
 }
 
+exports.getGranderProductImage=(req,res)=>{
+    const product=req.params.id;
+    models.GranderProduct.findById(product,{image:true})
+    .then(gotImage=>{
+        if(!gotImage.image) return res.setHeader("Content-Type","image/png").sendFile(path.resolve(__dirname,"../../../static/images/default-product.png"))
+        return res.setHeader("Content-Type",gotImage.image.mimetype).send(gotImage.image.data.buffer);
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
 
 exports.saveOrder=(req,res)=>{
-
+    
+}
+exports.pageOrder=(req,res)=>{
+    const page=req.body.page;
+    const pagesize=req.body.pagesize;
+    grander_models
 }
 exports.saveGranderOrder=(req,res)=>{
 

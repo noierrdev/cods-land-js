@@ -21,7 +21,16 @@ const EventSchema=new schema({
     logo:{
         type:Object,
         default:null
-    }
+    },
+    date:{
+        type:Date
+    },
+    users:[
+        {
+            type:scheme.ObjectId,
+            ref:"User"
+        }
+    ]
 },
 {
     timestamps: true,
