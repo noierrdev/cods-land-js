@@ -64,7 +64,7 @@ exports.productsPage=(req,res)=>{
         length:true,
         height:true,
         weight:true
-    }).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
+    }).sort({createdAt:-1}).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
     .then(async gotProducts=>{
         const totalNumbers=await models.Product.countDocuments().lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
