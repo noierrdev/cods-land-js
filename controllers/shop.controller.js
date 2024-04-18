@@ -49,7 +49,12 @@ exports.allCategories=(req,res)=>{
 exports.productsPage=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Product.find({},{
+    const category=req.body.category;
+    models.Product.find(category?{$or:[
+        {category_1:category},
+        {category_2:category},
+        {category_3:category}
+    ]}:{},{
         title:true,
         image_url:true,
         description:true,
@@ -66,7 +71,11 @@ exports.productsPage=(req,res)=>{
         weight:true
     }).sort({createdAt:-1}).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
     .then(async gotProducts=>{
-        const totalNumbers=await models.Product.countDocuments().lean().exec();
+        const totalNumbers=await models.Product.countDocuments(category?{$or:[
+            {category_1:category},
+            {category_2:category},
+            {category_3:category}
+        ]}:{}).lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
         return res.json({status:"success",data:{
             pagedata:gotProducts,
