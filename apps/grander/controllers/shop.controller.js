@@ -126,10 +126,9 @@ exports.getGranderProductImage=(req,res)=>{
 exports.saveOrder=(req,res)=>{
     
 }
-exports.pageOrder=(req,res)=>{
+exports.pageOrders=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    grander_models
 }
 exports.saveGranderOrder=(req,res)=>{
 

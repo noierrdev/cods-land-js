@@ -10,7 +10,7 @@ router.get("/products/:id",shopController.getGranderProduct);
 
 
 router.post("/orders",shopController.saveGranderOrder);
-router.post("/orders/page",shopController)
+router.post("/orders/page",shopController.pageOrders)
 router.put("/orders/:id",shopController.selectShippingRate);
 router.post("/orders/:id",shopController.sendShippingRequest);
 
