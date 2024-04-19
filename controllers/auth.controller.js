@@ -101,16 +101,20 @@ exports.signout=(req,res)=>{
 }
 
 exports.verify=(req,res)=>{
-    if(req.userId)
-    return res.json({
-        status:"success",
-        data:{
-            fullname:req.fullname,
-            email:req.email,
-            token:req.headers.token
-        }
-    });
-    else return res.json({status:"error",data:"AUTH_ERROR"})
+    if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"})
+    models.Member.findOne({user:req.userId})
+    .then(gotMember=>{
+        return res.json({
+            status:"success",
+            data:{
+                fullname:req.fullname,
+                email:req.email,
+                token:req.headers.token,
+                membership:gotMember
+            }
+        });
+    })
+    
 }
 
 exports.forgotPassword=async (req,res)=>{
