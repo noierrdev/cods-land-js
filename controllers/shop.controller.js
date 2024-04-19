@@ -196,7 +196,7 @@ exports.categoryPage=(req,res)=>{
         {category_1:category},
         {category_2:category},
         {category_3:category},
-    ]}).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
+    ]}).sort({createdAt:-1}).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
     .then(async gotProducts=>{
         const totalNumbers=await models.Product.countDocuments({$or:[
             {category_1:category},
