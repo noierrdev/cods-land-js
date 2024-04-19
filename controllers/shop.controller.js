@@ -202,7 +202,7 @@ exports.categoryPage=(req,res)=>{
             {category_1:category},
             {category_2:category},
             {category_3:category},
-        ]}).skip(page*pagesize).limit(pagesize).lean().exec()
+        ]}).lean().exec()
         const total=Math.ceil(totalNumbers);
         return res.json({status:"success",data:{
             pagedata:gotProducts,
