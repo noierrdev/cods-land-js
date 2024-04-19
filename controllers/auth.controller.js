@@ -82,11 +82,13 @@ exports.signin=async (req,res)=>{
         user:gotUser._id,
         token:tokenEncoded
     });
+    const membership=await models.Member.findOne({user:gotUser._id}).exec();
     newToken.save()
     .then(()=>res.json({status:"success",data:{
         fullname:gotUser.fullname,
         token:tokenEncoded,
-        email:gotUser.email
+        email:gotUser.email,
+        membership
     }}))
     .catch((e)=>res.json({status:"error",error:e}))
 }
