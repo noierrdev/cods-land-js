@@ -192,9 +192,17 @@ exports.categoryPage=(req,res)=>{
     const category=req.params.category_id;
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Product.find({category:category}).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
+    models.Product.find({$or:[
+        {category_1:category},
+        {category_2:category},
+        {category_3:category},
+    ]}).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
     .then(async gotProducts=>{
-        const totalNumbers=await models.Product.countDocuments({category:category}).skip(page*pagesize).limit(pagesize).lean().exec()
+        const totalNumbers=await models.Product.countDocuments({$or:[
+            {category_1:category},
+            {category_2:category},
+            {category_3:category},
+        ]}).skip(page*pagesize).limit(pagesize).lean().exec()
         const total=Math.ceil(totalNumbers);
         return res.json({status:"success",data:{
             pagedata:gotProducts,
