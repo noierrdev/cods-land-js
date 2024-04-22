@@ -52,7 +52,7 @@ exports.productsPage=(req,res)=>{
     const category=req.body.category;
     const search=req.body.search;
     const searchFilter=new RegExp(search,"i");
-    const filter={};
+    var filter={};
     if(category) filter={
         ...filter,
         $or:[
