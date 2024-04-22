@@ -81,8 +81,8 @@ exports.pageMembers=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
     const search=req.body.search;
-    
-    models.Member.find({}).skip(page*pagesize).sort({createdAt:-1}).limit(pagesize).populate("user","fullname email")
+    const searchFilter=new RegExp(search,"i");
+    models.Member.find().skip(page*pagesize).sort({createdAt:-1}).limit(pagesize).populate("user","fullname email")
     .then(async gotMembers=>{
         const totalNumbers=await models.Member.countDocuments().lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);

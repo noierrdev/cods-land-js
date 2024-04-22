@@ -50,11 +50,25 @@ exports.productsPage=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
     const category=req.body.category;
-    models.Product.find(category?{$or:[
-        {category_1:category},
-        {category_2:category},
-        {category_3:category}
-    ]}:{},{
+    const search=req.body.search;
+    const searchFilter=new RegExp(search,"i");
+    const filter={};
+    if(category) filter={
+        ...filter,
+        $or:[
+            {category_1:category},
+            {category_2:category},
+            {category_3:category}
+        ]
+    }
+    if(search) filter={
+        ...filter,
+        $and:[
+            {title:searchFilter},
+            {description:searchFilter}
+        ]
+    }
+    models.Product.find(filter,{
         title:true,
         image_url:true,
         description:true,
