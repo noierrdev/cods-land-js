@@ -37,7 +37,7 @@ exports.deleteEvent=(req,res)=>{
 exports.pageEvents=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Event.find({}).skip(page*pagesize).sort({createdAt:-1}).limit(pagesize).populate("users","fullname")
+    models.Event.find({},{title:true,description:true,createdAt:true,users:true}).skip(page*pagesize).sort({createdAt:-1}).limit(pagesize).populate("users","fullname")
     .then(async gotEvents=>{
         const totalNumbers=await models.Event.countDocuments().lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
@@ -48,6 +48,16 @@ exports.pageEvents=(req,res)=>{
             totalNumbers,
             total
         }})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.logoEvent=(req,res)=>{
+    const event_id=req.params.id;
+    models.Event.findById(event_id,{logo:true})
+    .then(gotLogo=>{
+        if(!gotLogo.logo) return res.setHeader("Content-Type","image/png").sendFile(path.resolve(__dirname,"../static/images/default-product.png"))
+        return res.setHeader("Content-Type",gotLogo.logo.mimetype).send(gotLogo.logo.data.buffer);
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
