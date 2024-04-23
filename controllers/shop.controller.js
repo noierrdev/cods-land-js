@@ -367,61 +367,62 @@ exports.saveOrder=(req,res)=>{
                         message: err
                     });
                 }
-                // let defaultClient = brevo.ApiClient.instance;
-                // let apiKey = defaultClient.authentications['api-key'];
-                // apiKey.apiKey = process.env.BREVO_KEY;
-                // let apiInstance = new brevo.TransactionalEmailsApi();
-                // let sendSmtpEmail = new brevo.SendSmtpEmail();
-                // sendSmtpEmail.subject = "New Order Arrived from "+req.email;
-                // sendSmtpEmail.htmlContent = `
-                // <html>
-                //     <body>
-                //         <h2>New order arrived form ${req.email}</h2>
-                //         <h2>The Id of new order is ${gotOrder._id}</h2>
-                //         <h2>The address of buyer is ${req.body.location}</h2>
-                //         ${
-                //             gotCartProducts.map((oneProduct)=>{
-                //                 return '<h3>'+oneProduct.product.title+'('+oneProduct.product._id+')'+' X '+oneProduct.count+'</h3>'
-                //             })
-                //         }
-                //         <a href="http://cods.land:3001/" ><h2>Cods.Land-shopping-admin</h2></a>
-                //     </body>
-                // </html>`;
-                // sendSmtpEmail.sender = { "name": "Cods.Land", "email": "info@cods.land" };
-                // sendSmtpEmail.to = [
+                let defaultClient = brevo.ApiClient.instance;
+                let apiKey = defaultClient.authentications['api-key'];
+                apiKey.apiKey = process.env.BREVO_KEY;
+                let apiInstance = new brevo.TransactionalEmailsApi();
+                let sendSmtpEmail = new brevo.SendSmtpEmail();
+                sendSmtpEmail.subject = "New Order Arrived from "+req.email;
+                sendSmtpEmail.htmlContent = `
+                <html>
+                    <body>
+                        <h2>New order arrived form ${req.email}</h2>
+                        <h2>The Id of new order is ${gotOrder._id}</h2>
+                        <h2>The address of buyer is ${req.body.location}</h2>
+                        ${
+                            gotCartProducts.map((oneProduct)=>{
+                                return '<h3>'+oneProduct.product.title+'('+oneProduct.product._id+')'+' X '+oneProduct.count+'</h3>'
+                            })
+                        }
+                        <a href="http://cods.land:3001/" ><h2>Cods.Land-shopping-admin</h2></a>
+                    </body>
+                </html>`;
+                sendSmtpEmail.sender = { "name": "Cods.Land", "email": "info@cods.land" };
+                sendSmtpEmail.to = [
 
-                //     {
-                //         "email": "noierrdev@proton.me", "name": "Vander Moleker"
-                //     },
-                //     {
-                //         "email": "noierrdev@gmail.com", "name": "Vander Moleker"
-                //     },
-                //     {
-                //         "email": "ncrdean@gmail.com", "name": "Dean Howell"
-                //     },
-                //     {
-                //         "email": "dean@cods.land", "name": "Dean Howell"
-                //     }
-                // ];
-                // sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
-                // sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" };
+                    {
+                        "email": "noierrdev@proton.me", "name": "Vander Moleker"
+                    },
+                    {
+                        "email": "noierrdev@gmail.com", "name": "Vander Moleker"
+                    },
+                    {
+                        "email": "ncrdean@gmail.com", "name": "Dean Howell"
+                    },
+                    {
+                        "email": "dean@cods.land", "name": "Dean Howell"
+                    }
+                ];
+                sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+                sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" };
 
 
-                // apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
-                //     // return res.json({ status: "success", data: data });
-                //     return res.json({status:"success",data:{
-                //         ...shipment,
-                //         order_id:gotOrder._id,
-                //         email:data
-                //     }})
-                // }, function (error) {
-                //     return res.json({ status: "error",error:error });
-                // });
-                await models.Order.findByIdAndUpdate(gotOrder._id,{$set:{shipping_info:shipment}});
-                return res.json({status:"success",data:{
-                    ...shipment,
-                    order_id:gotOrder._id,
-                }})
+                apiInstance.sendTransacEmail(sendSmtpEmail).then(async function (data) {
+                    // return res.json({ status: "success", data: data });
+                    await models.Order.findByIdAndUpdate(gotOrder._id,{$set:{shipping_info:shipment}});
+                    return res.json({status:"success",data:{
+                        ...shipment,
+                        order_id:gotOrder._id,
+                        email:data
+                    }})
+                }, function (error) {
+                    return res.json({ status: "error",error:error });
+                });
+                
+                // return res.json({status:"success",data:{
+                //     ...shipment,
+                //     order_id:gotOrder._id,
+                // }})
                 
             });
         })
