@@ -85,11 +85,7 @@ exports.productsPage=(req,res)=>{
         weight:true
     }).sort({createdAt:-1}).skip(page*pagesize).limit(pagesize).populate('category category_1 category_2 category_3','title')
     .then(async gotProducts=>{
-        const totalNumbers=await models.Product.countDocuments(category?{$or:[
-            {category_1:category},
-            {category_2:category},
-            {category_3:category}
-        ]}:{}).lean().exec();
+        const totalNumbers=await models.Product.countDocuments(filter).lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
         return res.json({status:"success",data:{
             pagedata:gotProducts,
