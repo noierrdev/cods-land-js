@@ -149,7 +149,7 @@ exports.pageContents=(req,res)=>{
     var filter={};
     if(category) filter={
         ...filter,
-        category:category
+        // category:category
     };
     if(search){
         const searchFilter=new RegExp(search, "i");
