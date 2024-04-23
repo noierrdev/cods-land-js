@@ -30,7 +30,7 @@ exports.getEvent=(req,res)=>{
 }
 exports.deleteEvent=(req,res)=>{
     const event_id=req.params.id;
-    models.Event.findByIdAndRemove(event_id)
+    models.Event.findByIdAndDelete(event_id)
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:e}))
 }
