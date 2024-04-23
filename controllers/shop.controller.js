@@ -381,7 +381,10 @@ exports.saveOrder=(req,res)=>{
                         <h2>The address of buyer is ${req.body.street} ${req.body.city} ${req.body.state} ${req.body.country}</h2>
                         ${
                             gotCartProducts.map((oneProduct)=>{
-                                return '<h3>'+oneProduct.product.title+'('+oneProduct.product._id+')'+' X '+oneProduct.count+'</h3>'
+                                return `
+                                <img width="100" src="https://cods.land/api/shop/products/${oneProduct.product._id}/image" />
+                                <h3>${oneProduct.product.title}(${oneProduct.product._id})X${oneProduct.count}</h3>
+                                `
                             })
                         }
                         <a href="http://cods.land:3001/" ><h2>Cods.Land-shopping-admin</h2></a>
