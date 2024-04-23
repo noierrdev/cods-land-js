@@ -63,7 +63,7 @@ exports.productsPage=(req,res)=>{
     }
     if(search) filter={
         ...filter,
-        $and:[
+        $or:[
             {title:searchFilter},
             {description:searchFilter}
         ]
