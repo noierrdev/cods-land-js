@@ -37,7 +37,7 @@ exports.deleteEvent=(req,res)=>{
 exports.pageEvents=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.Event.find({},{title:true,description:true,createdAt:true,users:true}).skip(page*pagesize).sort({createdAt:-1}).limit(pagesize).populate("users","fullname")
+    models.Event.find({},{title:true,description:true,createdAt:true,users:true,start:true,end:true}).skip(page*pagesize).sort({createdAt:-1}).limit(pagesize).populate("users","fullname")
     .then(async gotEvents=>{
         const totalNumbers=await models.Event.countDocuments().lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
