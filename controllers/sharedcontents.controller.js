@@ -144,9 +144,30 @@ exports.sendContentMedia=(req,res)=>{
 exports.pageContents=(req,res)=>{
     const page=req.body.page;
     const pagesize=req.body.pagesize;
-    models.SharedContent.find({}).skip(page*pagesize).sort({createdAt:-1}).limit(pagesize).populate("author category","fullname email title")
+    const search=req.body.search;
+    const category=req.body.search;
+    var filter={};
+    if(category) filter={
+        ...filter,
+        category:category
+    };
+    if(search){
+        const searchFilter=new RegExp(search, "i");
+        filter={
+            ...filter,
+            $or:[
+                {
+                    title:searchFilter
+                },
+                {
+                    content:searchFilter
+                }
+            ]
+        }
+    }
+    models.SharedContent.find(filter).skip(page*pagesize).sort({createdAt:-1}).limit(pagesize).populate("author category","fullname email title")
     .then(async gotContents=>{
-        const totalNumbers=await models.SharedContent.countDocuments().lean().exec();
+        const totalNumbers=await models.SharedContent.countDocuments(filter).lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
         return res.json({status:"success",data:{
             pagedata:gotContents,
