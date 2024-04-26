@@ -1,6 +1,10 @@
 const router=require('express').Router()
 const shopController=require("../controllers/shop.controller");
 
+router.get("/",(req,res)=>{
+    res.json({status:"success",data:"API of theessenceoflife.com"});
+})
+
 router.post("/products/page",shopController.pageGranderProducts);
 router.post("/products",shopController.saveGranderProduct);
 router.delete("/products/:id",shopController.deleteGranderProduct);
