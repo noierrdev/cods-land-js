@@ -80,3 +80,8 @@ exports.uploadCSV=async (req,res)=>{
     }
     return res.json({status:"success"})
 }
+exports.deleteAll=(req,res)=>{
+    models.Subscriber.deleteMany({})
+    .then(()=>res.json({status:"success"}))
+    .catch(e=>res.json({status:"error",error:e}))
+}
