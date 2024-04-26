@@ -16,7 +16,8 @@ const Member=require('./Member.model')
 const Product=require('./Product.model')
 const CartProduct=require('./CartProduct.model');
 const ProductCategory=require('./ProductCategory.model')
-const Order=require('./Order.model')
+const Order=require('./Order.model');
+const Subscriber=require("./Subscriber.model");
 module.exports={
     User,
     Event,
@@ -36,5 +37,6 @@ module.exports={
     Product,
     CartProduct,
     ProductCategory,
-    Order
+    Order,
+    Subscriber
 }

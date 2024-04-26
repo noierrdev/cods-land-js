@@ -115,8 +115,7 @@ exports.uploadCSV=async (req,res)=>{
     //product_id
     const csvFile=req.files.csv;
     const csvData=String(csvFile.data).split("\n");
-    csvData.splice(0,1);
-    console.log(csvData.length)
+    csvData.splice(0,1);//remove headline
     for(var oneLine of csvData){
         var oneProduct=oneLine.split(";cartdata;,");
         // var image_url=oneProduct[7];
