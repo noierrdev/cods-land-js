@@ -10,10 +10,10 @@ router.get("/products/:id",shopController.getGranderProduct);
 
 
 router.post("/orders",shopController.saveGranderOrder);
-router.post("/orders/page",shopController.pageOrders)
+router.post("/orders/page",shopController.pageOrders);
+router.post('/orders/purchase',shopController.purchase);
 router.put("/orders/:id",shopController.selectShippingRate);
 router.post("/orders/:id",shopController.sendShippingRequest);
-
 router.delete("/orders/:id",shopController.deleteGranderOrder)
 
 module.exports=router;

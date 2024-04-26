@@ -8,9 +8,11 @@ const GranderOrderSchema=new schema({
             ref:"GranderProduct"
         }
     ],
-    user:{
-        type:schema.ObjectId,
-        ref:"User"
+    fullname:{
+        type:String
+    },
+    email:{
+        type:String
     },
     price:{
         type:Number

@@ -319,7 +319,7 @@ exports.saveOrder=(req,res)=>{
             phone:req.body.phone,
             zip:req.body.zip,
             shipingDate: req.body.date,
-            paid:true,
+            paid:false,
             accepted:false,
         });
         newOrder.save()
@@ -601,7 +601,7 @@ exports.sendShippingRequest=(req,res)=>{
             }).catch((err)=>res.json({status:"error",error:err}))  
         })
     })
-    .catch(e=>res.json({status:"error",error:err}))
+    .catch(e=>res.json({status:"error",error:e}))
 }
 
 exports.purchase=(req,res)=>{
