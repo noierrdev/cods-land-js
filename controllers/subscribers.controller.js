@@ -60,6 +60,7 @@ exports.uploadCSV=async (req,res)=>{
     csvData.splice(0,1);//Remove headline
     for(var oneLine of csvData){
         var oneSubscriber=oneLine.split(",");
+        if(oneSubscriber[3]=="") continue;
         const oneNewSubscriber=new models.Subscriber({
             fullname:oneSubscriber[2],
             email:oneSubscriber[3],
@@ -74,7 +75,7 @@ exports.uploadCSV=async (req,res)=>{
             mobilephone:oneSubscriber[31],
             detail:{raw:oneSubscriber},
         })
-        await oneNewProduct.save()
+        await oneNewSubscriber.save()
 
     }
     return res.json({status:"success"})
