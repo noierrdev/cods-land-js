@@ -59,11 +59,12 @@ exports.uploadCSV=async (req,res)=>{
     const csvData=String(csvFile.data).split("\n");
     csvData.splice(0,1);//Remove headline
     for(var oneLine of csvData){
-        oneLine.replace(/"/g,``);
+        // oneLine.replace(/"/g,``);
         var oneSubscriber=oneLine.split(",");
+        if(oneSubscriber.length<2) continue;
         if(oneSubscriber[3]=="") continue;
         const oneNewSubscriber=new models.Subscriber({
-            fullname:oneSubscriber[2],
+            fullname:oneSubscriber[2].replace(/"/g,""),
             email:oneSubscriber[3],
             country:oneSubscriber[12],
             state:oneSubscriber[13],
