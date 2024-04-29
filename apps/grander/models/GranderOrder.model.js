@@ -4,8 +4,13 @@ const schema=mongoose.Schema;
 const GranderOrderSchema=new schema({
     products:[
         {
-            type:schema.ObjectId,
-            ref:"Product"
+            ptoduct:{
+                type:schema.ObjectId,
+                ref:"Product"
+            },
+            count:{
+                type:Number
+            }
         }
     ],
     fullname:{
