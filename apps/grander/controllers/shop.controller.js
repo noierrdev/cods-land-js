@@ -137,7 +137,7 @@ exports.saveGranderOrder=(req,res)=>{
             product:oneCartProduct._id,
             count:oneCartProduct.count
         });
-        totalPrice+=oneCartProduct.product.price*oneCartProduct.count
+        totalPrice+=oneCartProduct.price*oneCartProduct.count
     });
     const newOrder=new grander_models.GranderOrder({
         fullname:req.body.fullname,
