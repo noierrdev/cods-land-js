@@ -5,7 +5,7 @@ const GranderOrderSchema=new schema({
     products:[
         {
             type:schema.ObjectId,
-            ref:"GranderProduct"
+            ref:"Product"
         }
     ],
     fullname:{
