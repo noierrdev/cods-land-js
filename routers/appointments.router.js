@@ -9,4 +9,6 @@ router.post('/save',appointmentsController.saveAppointment);
 router.get('/:id',appointmentsController.getAppointment)
 router.get('/:id/complete',appointmentsController.completeAppointment)
 
+router.post("/calendar",appointmentsController.getFromRange)
+
 module.exports=router;

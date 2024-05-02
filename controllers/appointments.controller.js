@@ -98,3 +98,8 @@ exports.completeAppointment=(req,res)=>{
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
 }
+exports.getFromRange=(req,res)=>{
+    const range=req.body.range;
+    const rangeLength=range.length;
+    return res.json({status:"success",data:range});
+}
