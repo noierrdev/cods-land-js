@@ -98,6 +98,14 @@ exports.completeAppointment=(req,res)=>{
     .then(()=>res.json({status:"success"}))
     .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
 }
+exports.allAppointments=(req,res)=>{
+    if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
+    models.Appointment.find({user:req.userId}).populate('user,type','fullname email type')
+    .then(gotAppointments=>{
+        return res.json({status:"success",data:gotAppointments})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
 exports.getFromRange=(req,res)=>{
     const range=req.body.range;
     const rangeLength=range.length;
