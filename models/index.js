@@ -18,6 +18,7 @@ const CartProduct=require('./CartProduct.model');
 const ProductCategory=require('./ProductCategory.model')
 const Order=require('./Order.model');
 const Subscriber=require("./Subscriber.model");
+const MeetingAppointment=require('./MeetingAppointment.model')
 module.exports={
     User,
     Event,
@@ -38,5 +39,6 @@ module.exports={
     CartProduct,
     ProductCategory,
     Order,
-    Subscriber
+    Subscriber,
+    MeetingAppointment
 }

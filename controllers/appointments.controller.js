@@ -103,3 +103,68 @@ exports.getFromRange=(req,res)=>{
     const rangeLength=range.length;
     return res.json({status:"success",data:range});
 }
+
+exports.saveMeeting=(req,res)=>{
+    const email=req.body.email;
+    const phone=req.body.phone;
+    const address=req.body.address;
+    const fullname=req.body.fullname;
+    const year=req.body.year;
+    const month=req.bpdy.month;
+    const day=req.body.day;
+    const from=req.body.from;
+    const to=req.body.to;
+    const newMeeting=new models.MeetingAppointment({
+        fullname,
+        email,
+        phone,
+        address,
+        year,
+        month,
+        day,
+        from,
+        to
+    });
+    newMeeting.save()
+    .then(()=>{
+        return res.json({status:"success"})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
+exports.deleteMeeting=(req,res)=>{
+    const id=req.params.id;
+    models.MeetingAppointment.findByIdAndDelete(id)
+    .then(()=>res.json({status:"success"}))
+    .catch((e)=>res.json({status:"error",error:e}))
+}
+exports.pageMeetings=(req,res)=>{
+    const page=req.body.page;
+    const pagesize=req.body.pagesize;
+    const search=req.body.search;
+    const searchFilter=new RegExp(search,"i");
+    var filter={};
+    if(search) filter={
+        ...filter,
+        $or:[
+            {fullname:searchFilter},
+            {email:searchFilter},
+            {address:searchFilter}
+        ]
+    }
+    models.MeetingAppointment.find(filter).sort({createdAt:-1}).skip(page*pagesize).limit(pagesize)
+    .then(async gotMeetings=>{
+        const totalNumbers=await models.MeetingAppointment.countDocuments().lean().exec();
+        const total=Math.ceil(totalNumbers/pagesize);
+        return res.json({status:"success",data:{
+            pagedata:gotMeetings,
+            page,
+            pagesize,
+            totalNumbers,
+            total
+        }})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
+exports.meetingsFromRange=(req,res)=>{
+    return res.json(req.body);
+}
