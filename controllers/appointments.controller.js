@@ -110,7 +110,7 @@ exports.completeAppointment=(req,res)=>{
 }
 exports.allAppointments=(req,res)=>{
     if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});
-    models.Appointment.find({user:req.userId}).populate('user type','fullname email type')
+    models.Appointment.find({user:req.userId}).populate('user type','fullname email title length price')
     .then(gotAppointments=>{
         return res.json({status:"success",data:gotAppointments})
     })
