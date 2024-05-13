@@ -6,8 +6,10 @@ router.post('/appointment-types/save',appointmentsController.saveAppointmentType
 router.get('/appointment-types/',appointmentsController.allAppointmentTypes);
 
 router.post('/save',appointmentsController.saveAppointment);
+router.get('/my',appointmentsController.allAppointments)
 router.get('/:id',appointmentsController.getAppointment)
 router.get('/:id/complete',appointmentsController.completeAppointment)
+
 
 router.post("/calendar",appointmentsController.getFromRange)
 
