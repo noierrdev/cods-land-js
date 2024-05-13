@@ -63,8 +63,8 @@ exports.saveAppointment=async (req,res)=>{
         user:req.userId,
         type:req.body.appointmenttype,
         time:req.body.time,
-        from:req.body.time,
-        to:to
+        // from:req.body.time,
+        // to:to
     });
     newAppointment.save()
     .then(()=>res.json({status:"success"}))
