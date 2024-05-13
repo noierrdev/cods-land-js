@@ -78,6 +78,16 @@ exports.getAppointment=async (req,res)=>{
     if(!gotAppointment) return res.json({status:"error",error:"NO_APPOINTMENT"})
     return res.json({status:"success",data:gotAppointment});
 }
+exports.deleteAppointment=async (req,res)=>{
+    if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
+    const appointmentId=req.params.id;
+    models.Appointment.findByIdAndDelete(appointmentId)
+    .then(()=>{
+        return res.json({status:"success"});
+        
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
 
 exports.pageAppointment=(req,res)=>{
     if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
