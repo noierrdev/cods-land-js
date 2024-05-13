@@ -24,40 +24,40 @@ exports.saveAppointment=async (req,res)=>{
     const gotAppointmentType=await models.AppointmentType.findById(req.body.appointmenttype);
     if(!gotAppointmentType) return res.json({status:"error",data:"NO_APPOINTMENTTYPE"});
     const untilTime=req.body.time+gotAppointmentType.length;
-    const alreayExist=await models.Appointment.findOne({
-        $or:[
-            {
-                $and:[
-                    {
-                        from:{$lt:req.body.from}
-                    },
-                    {
-                        to:{$gt:req.body.from}
-                    },
-                ]
-            },
-            {
-                $and:[
-                    {
-                        from:{$lt:untilTime}
-                    },
-                    {
-                        to:{$gt:untilTime}
-                    },
-                ]
-            },
-            {
-                $and:[
-                    {
-                        from:{$gt:req.body.from},
-                        to:{$lt:untilTime}
-                    }
-                ]
-            }
-        ]
-    });
+    // const alreayExist=await models.Appointment.findOne({
+    //     $or:[
+    //         {
+    //             $and:[
+    //                 {
+    //                     from:{$lt:req.body.from}
+    //                 },
+    //                 {
+    //                     to:{$gt:req.body.from}
+    //                 },
+    //             ]
+    //         },
+    //         {
+    //             $and:[
+    //                 {
+    //                     from:{$lt:untilTime}
+    //                 },
+    //                 {
+    //                     to:{$gt:untilTime}
+    //                 },
+    //             ]
+    //         },
+    //         {
+    //             $and:[
+    //                 {
+    //                     from:{$gt:req.body.from},
+    //                     to:{$lt:untilTime}
+    //                 }
+    //             ]
+    //         }
+    //     ]
+    // });
 
-    if(alreayExist.length>0) return res.json({status:"error",error:"ALREADY_OCCUPIED"})
+    // if(alreayExist.length>0) return res.json({status:"error",error:"ALREADY_OCCUPIED"})
     
     const newAppointment=new models.Appointment({
         user:req.userId,
