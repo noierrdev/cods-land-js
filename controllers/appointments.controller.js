@@ -24,6 +24,10 @@ exports.saveAppointment=async (req,res)=>{
     const gotAppointmentType=await models.AppointmentType.findById(req.body.appointmenttype);
     if(!gotAppointmentType) return res.json({status:"error",data:"NO_APPOINTMENTTYPE"});
     const untilTime=req.body.time+gotAppointmentType.length;
+    const date=new Date(req.body.time);
+    const year=date.getFullYear();
+    const month=date.getMonth();
+    const day=date.getDate();
     // const alreayExist=await models.Appointment.findOne({
     //     $or:[
     //         {
@@ -63,8 +67,11 @@ exports.saveAppointment=async (req,res)=>{
         user:req.userId,
         type:req.body.appointmenttype,
         time:req.body.time,
-        // from:req.body.time,
-        // to:to
+        from:req.body.time,
+        to:untilTime,
+        year,
+        month,
+        day
     });
     newAppointment.save()
     .then(()=>res.json({status:"success"}))
