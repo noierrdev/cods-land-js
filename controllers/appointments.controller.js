@@ -159,7 +159,7 @@ exports.getFromRange=(req,res)=>{
     }
     models.Appointment.find(filter).populate("type user","fullname email phonenumber city country title length price")
     .then(gotAppointments=>{
-        return res.json({status:"success",data:gotAppointments})
+        return res.json({status:"success",data:filter})
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
