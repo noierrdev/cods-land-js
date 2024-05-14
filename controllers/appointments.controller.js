@@ -151,15 +151,12 @@ exports.getFromRange=(req,res)=>{
                 {
                     month:{$gte:startMonth,$lte:endMonth}
                 },
-                {
-                    day:{$gte:startDay,$lte:endDay}
-                },
             ]
         }
     }
     models.Appointment.find(filter).populate("type user","fullname email phonenumber city country title length price")
     .then(gotAppointments=>{
-        return res.json({status:"success",gotAppointments})
+        return res.json({status:"success",data:gotAppointments})
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
