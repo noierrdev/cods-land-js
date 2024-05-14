@@ -48,9 +48,9 @@ exports.saveAppointment=async (req,res)=>{
 exports.getAppointment=async (req,res)=>{
     if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
     const appointmentId=req.params.id;
-    const gotAppointment=await models.Appointment.findById(appointmentId).populate('type user','fullname email phonenumber city country title price length').exec();
+    const gotAppointment=await models.Appointment.findById(appointmentId).populate('type user','fullname email phonenumber city country title price length').lean();
     if(!gotAppointment) return res.json({status:"error",error:"NO_APPOINTMENT"});
-    const membership=await models.Member.find({user:gotAppointment.user._id}).exec();
+    const membership=await models.Member.find({user:gotAppointment.user._id}).lean();
     return res.json({status:"success",data:{...gotAppointment,membership}});
 }
 exports.deleteAppointment=async (req,res)=>{
