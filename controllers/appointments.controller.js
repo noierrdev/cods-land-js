@@ -24,51 +24,17 @@ exports.saveAppointment=async (req,res)=>{
     const gotAppointmentType=await models.AppointmentType.findById(req.body.appointmenttype);
     if(!gotAppointmentType) return res.json({status:"error",data:"NO_APPOINTMENTTYPE"});
     
-    const date=new Date(req.body.time);
+    const date=new Date(Number(req.body.time));
     const year=date.getFullYear();
     const month=date.getMonth();
     const day=date.getDate();
-    const untilTime=req.body.time+gotAppointmentType.length;
-    // const alreayExist=await models.Appointment.findOne({
-    //     $or:[
-    //         {
-    //             $and:[
-    //                 {
-    //                     from:{$lt:req.body.from}
-    //                 },
-    //                 {
-    //                     to:{$gt:req.body.from}
-    //                 },
-    //             ]
-    //         },
-    //         {
-    //             $and:[
-    //                 {
-    //                     from:{$lt:untilTime}
-    //                 },
-    //                 {
-    //                     to:{$gt:untilTime}
-    //                 },
-    //             ]
-    //         },
-    //         {
-    //             $and:[
-    //                 {
-    //                     from:{$gt:req.body.from},
-    //                     to:{$lt:untilTime}
-    //                 }
-    //             ]
-    //         }
-    //     ]
-    // });
-
-    // if(alreayExist.length>0) return res.json({status:"error",error:"ALREADY_OCCUPIED"})
+    const untilTime=Number(req.body.time)+gotAppointmentType.length;
     
     const newAppointment=new models.Appointment({
         user:req.userId,
         type:req.body.appointmenttype,
-        time:req.body.time,
-        from:req.body.time,
+        time:date,
+        from:date,
         to:untilTime,
         year,
         month,
@@ -127,7 +93,75 @@ exports.allAppointments=(req,res)=>{
 exports.getFromRange=(req,res)=>{
     const range=req.body.range;
     const rangeLength=range.length;
-    return res.json({status:"success",data:range});
+    var filter={};
+    if(rangeLength==7){
+        const startDate=new Date(range[0]);
+        const startYear=startDate.getFullYear()
+        const startMonth=startDate.getMonth();
+        const startDay=startDate.getDate()
+        const endDate=new Date(range[6]);
+        const endYear=endDate.getFullYear()
+        const endMonth=endDate.getMonth();
+        const endDay=endDate.getDate();
+        filter={
+            $and:[
+                {
+                    year:{$gte:startYear,$lte:endYear}
+                },
+                {
+                    month:{$gte:startMonth,$lte:endMonth}
+                },
+                {
+                    day:{$gte:startDay,$lte:endDay}
+                },
+            ]
+        }
+    }else if(rangeLength==1){
+        const selectedDate=new Date(range[0]);
+        const selectedYear=selectedDate.getFullYear()
+        const selectedMonth=selectedDate.getMonth();
+        const selectedDay=selectedDate.getDate();
+        filter={
+            $and:[
+                {
+                    year:selectedYear
+                },
+                {
+                    month:selectedMonth
+                },
+                {
+                    day:selectedDay
+                },
+            ]
+        }
+    }else{
+        const startDate=new Date(range.start);
+        const startYear=startDate.getFullYear()
+        const startMonth=startDate.getMonth();
+        const startDay=startDate.getDate()
+        const endDate=new Date(range.end);
+        const endYear=endDate.getFullYear()
+        const endMonth=endDate.getMonth();
+        const endDay=endDate.getDate();
+        filter={
+            $and:[
+                {
+                    year:{$gte:startYear,$lte:endYear}
+                },
+                {
+                    month:{$gte:startMonth,$lte:endMonth}
+                },
+                {
+                    day:{$gte:startDay,$lte:endDay}
+                },
+            ]
+        }
+    }
+    models.Appointment.find(filter).populate("type user","fullname email phonenumber city country title length price")
+    .then(gotAppointments=>{
+        return res.json({status:"success",data:gotAppointments})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
 }
 
 exports.saveMeeting=(req,res)=>{
