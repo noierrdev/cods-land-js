@@ -146,13 +146,13 @@ exports.getFromRange=(req,res)=>{
         filter={
             $and:[
                 {
-                    year:{$gte:startYear,$lte:endYear}
+                    year:startYear
                 },
                 {
-                    month:{$gte:startMonth,$lte:endMonth}
+                    month:startMonth
                 },
                 {
-                    day:{$gte:startDay,$lte:endDay}
+                    day:startDay
                 },
             ]
         }
