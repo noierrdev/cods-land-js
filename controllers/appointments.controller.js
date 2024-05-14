@@ -150,10 +150,7 @@ exports.getFromRange=(req,res)=>{
                 },
                 {
                     month:startMonth
-                },
-                {
-                    day:startDay
-                },
+                }
             ]
         }
     }
