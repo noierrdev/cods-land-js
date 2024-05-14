@@ -25,6 +25,7 @@ exports.saveAppointment=async (req,res)=>{
     if(!gotAppointmentType) return res.json({status:"error",data:"NO_APPOINTMENTTYPE"});
     const address=req.body.address;
     const location=req.body.location;
+    const detail=req.body.detail;
     const date=new Date(Number(req.body.time));
     const year=date.getFullYear();
     const month=date.getMonth();
@@ -41,7 +42,8 @@ exports.saveAppointment=async (req,res)=>{
         month,
         day,
         address,
-        location
+        location,
+        detail
     });
     newAppointment.save()
     .then(()=>res.json({status:"success"}))

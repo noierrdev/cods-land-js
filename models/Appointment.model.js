@@ -17,6 +17,9 @@ const AppointmentSchema=new schema({
     //     ref:"Event",
     //     default:null
     // },
+    detail:{
+        type:String
+    },
     name:{
         type:String
     },
