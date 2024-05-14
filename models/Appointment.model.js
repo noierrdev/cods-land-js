@@ -17,6 +17,15 @@ const AppointmentSchema=new schema({
     //     ref:"Event",
     //     default:null
     // },
+    name:{
+        type:String
+    },
+    address:{
+        type:String
+    },
+    location:{
+        type:String
+    },
     year:{
         type:Number,
         default:2023

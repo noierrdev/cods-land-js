@@ -23,7 +23,8 @@ exports.saveAppointment=async (req,res)=>{
     if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
     const gotAppointmentType=await models.AppointmentType.findById(req.body.appointmenttype);
     if(!gotAppointmentType) return res.json({status:"error",data:"NO_APPOINTMENTTYPE"});
-    
+    const address=req.body.address;
+    const location=req.body.location;
     const date=new Date(Number(req.body.time));
     const year=date.getFullYear();
     const month=date.getMonth();
@@ -38,7 +39,9 @@ exports.saveAppointment=async (req,res)=>{
         to:untilTime,
         year,
         month,
-        day
+        day,
+        address,
+        location
     });
     newAppointment.save()
     .then(()=>res.json({status:"success"}))
