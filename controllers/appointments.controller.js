@@ -110,9 +110,56 @@ exports.acceptAppointment=(req,res)=>{
         <html>
             <body>
                 <h2>Dear ${gotAppointment.user.fullname}.</h2>
-                <h2>Your Meeting with Dr Dean is appointmented.</h2>
+                <h2>Your appointment for Meeting with Dr Dean is accepted.</h2>
                 <h2>The Id of new appointment is ${appointment}</h2>
                 <h2>The meeting will be from ${gotAppointment.time} for ${gotAppointment.type.length/(60000)} minutes.</h2>
+                <h2>at ${gotAppointment.address} </h2>
+                <h2>Thanks</h2>
+                
+                <a href="http://cods.land:3001/" ><h2>Cods.Land-admin</h2></a>
+            </body>
+        </html>`;
+        sendSmtpEmail.sender = { "name": "Cods.Land", "email": "info@cods.land" };
+        sendSmtpEmail.to = [
+            {
+                "email": gotAppointment.user.email, "name": gotAppointment.user.fullname
+            },
+            {
+                "email": "vandermoleker@gmail.com", "name": "Vander Moleker"
+            },
+            {
+                "email": "noierrdev@gmail.com", "name": "Vander Moleker"
+            },
+        ];
+        sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+        sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" };
+
+
+        apiInstance.sendTransacEmail(sendSmtpEmail).then(async function (data) {
+            // return res.json({ status: "success", data: data });
+            return res.json({status:"success",data:data})
+        })
+    })
+    .catch(e=>res.json({status:'error',error:e}))
+}
+
+exports.cancelAppointment=(req,res)=>{
+    const appointment=req.params.id;
+    models.Appointment.findByIdAndUpdate(appointment,{$set:{accepted:false,status:"canceled"}}).populate('user type','fullname email length price title')
+    .then((gotAppointment)=>{
+        let defaultClient = brevo.ApiClient.instance;
+        let apiKey = defaultClient.authentications['api-key'];
+        apiKey.apiKey = process.env.BREVO_KEY;
+        let apiInstance = new brevo.TransactionalEmailsApi();
+        let sendSmtpEmail = new brevo.SendSmtpEmail();
+        sendSmtpEmail.subject = "Cods.Land canceled your appointment request.";
+        sendSmtpEmail.htmlContent = `
+        <html>
+            <body>
+                <h2>Dear ${gotAppointment.user.fullname}.</h2>
+                <h2>Your appointment for Meeting with Dr Dean is canceled. We are really sorry about that.</h2>
+                <h2>The Id of new appointment is ${appointment}</h2>
+                <h2>The meeting would be from ${gotAppointment.time} for ${gotAppointment.type.length/(60000)} minutes.</h2>
                 <h2>at ${gotAppointment.address} </h2>
                 
                 <a href="http://cods.land:3001/" ><h2>Cods.Land-admin</h2></a>
@@ -141,6 +188,7 @@ exports.acceptAppointment=(req,res)=>{
     })
     .catch(e=>res.json({status:'error',error:e}))
 }
+
 exports.getAppointment=async (req,res)=>{
     if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
     const appointmentId=req.params.id;
