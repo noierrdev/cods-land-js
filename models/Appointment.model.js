@@ -52,6 +52,10 @@ const AppointmentSchema=new schema({
     status:{
         type:String,
         default:"pending"
+    },
+    accepted:{
+        type:Boolean,
+        default:false
     }
 },
 {
