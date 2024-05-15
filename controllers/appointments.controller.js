@@ -116,7 +116,6 @@ exports.acceptAppointment=(req,res)=>{
                 <h2>at ${gotAppointment.address} </h2>
                 <h2>Thanks</h2>
                 
-                <a href="http://cods.land:3001/" ><h2>Cods.Land-admin</h2></a>
             </body>
         </html>`;
         sendSmtpEmail.sender = { "name": "Cods.Land", "email": "info@cods.land" };
@@ -162,7 +161,6 @@ exports.cancelAppointment=(req,res)=>{
                 <h2>The meeting would be from ${gotAppointment.time} for ${gotAppointment.type.length/(60000)} minutes.</h2>
                 <h2>at ${gotAppointment.address} </h2>
                 
-                <a href="http://cods.land:3001/" ><h2>Cods.Land-admin</h2></a>
             </body>
         </html>`;
         sendSmtpEmail.sender = { "name": "Cods.Land", "email": "info@cods.land" };
