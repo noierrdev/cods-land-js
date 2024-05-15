@@ -1,4 +1,6 @@
 const models=require('../models')
+const brevo=require('@getbrevo/brevo');
+
 
 exports.saveAppointmentType=(req,res)=>{
     // if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
@@ -8,7 +10,9 @@ exports.saveAppointmentType=(req,res)=>{
         length:req.body.length
     });
     newAppointmentType.save()
-    .then(()=>res.json({status:"success"}))
+    .then(()=>{
+        return res.json({status:"success"})
+    })
     .catch((e)=>res.json({status:"error",error:"SAVE_FAILED"}));
 }
 
@@ -47,7 +51,49 @@ exports.saveAppointment=async (req,res)=>{
         detail
     });
     newAppointment.save()
-    .then(()=>res.json({status:"success"}))
+    .then((gotAppointment)=>{
+        let defaultClient = brevo.ApiClient.instance;
+        let apiKey = defaultClient.authentications['api-key'];
+        apiKey.apiKey = process.env.BREVO_KEY;
+        let apiInstance = new brevo.TransactionalEmailsApi();
+        let sendSmtpEmail = new brevo.SendSmtpEmail();
+        sendSmtpEmail.subject = "New Appointment Requested from "+req.email;
+        sendSmtpEmail.htmlContent = `
+        <html>
+            <body>
+                <h2>New Appointment Requested from ${req.email}</h2>
+                <h2>The Id of new appointment is ${gotAppointment._id}</h2>
+                <h2>The address of booker is ${req.body.address}</h2>
+                
+                <a href="http://cods.land:3001/" ><h2>Cods.Land-admin</h2></a>
+            </body>
+        </html>`;
+        sendSmtpEmail.sender = { "name": "Cods.Land", "email": "info@cods.land" };
+        sendSmtpEmail.to = [
+
+            {
+                "email": "noierrdev@proton.me", "name": "Vander Moleker"
+            },
+            {
+                "email": "noierrdev@gmail.com", "name": "Vander Moleker"
+            },
+            {
+                "email": "ncrdean@gmail.com", "name": "Dean Howell"
+            },
+            {
+                "email": "dean@cods.land", "name": "Dean Howell"
+            }
+        ];
+        sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+        sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" };
+
+
+        apiInstance.sendTransacEmail(sendSmtpEmail).then(async function (data) {
+            // return res.json({ status: "success", data: data });
+            return res.json({status:"success",data:data})
+        })
+        // return res.json({status:"success"});
+    })
     .catch((e)=>res.json({status:"error",error:"SAVE_FAILED"}));
 }
 
