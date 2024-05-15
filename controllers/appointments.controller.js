@@ -31,7 +31,8 @@ exports.saveAppointment=async (req,res)=>{
     const month=date.getMonth();
     const day=date.getDate();
     const untilTime=Number(req.body.time)+gotAppointmentType.length;
-    
+    const duplicatedAppointments=await models.Appointment.find({from:date}).lean().exec();
+    if(duplicatedAppointments.length>0) return res.json({status:"error",error:"TIME_DUPLICATED"})
     const newAppointment=new models.Appointment({
         user:req.userId,
         type:req.body.appointmenttype,
