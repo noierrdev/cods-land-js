@@ -208,13 +208,32 @@ exports.deleteAppointment=async (req,res)=>{
 
 exports.pageAppointment=(req,res)=>{
     if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
-    const page= req.body.page;
-    const pagesize= req.body.pagesize;
-    models.Appointment.find({user:req.userId}).skip(pagesize*page).limit(pagesize)
-    .then(gotAppointments=>{
-        return res.json({status:"success",data:gotAppointments})
+    const page=req.body.page;
+    const pagesize=req.body.pagesize;
+    const search=req.body.search;
+    const searchFilter=new RegExp(search,"i");
+    var filter={};
+    if(search) filter={
+        ...filter,
+        $or:[
+            {'user.fullname':searchFilter},
+            {'user.email':searchFilter},
+            {address:searchFilter}
+        ]
+    }
+    models.Appointment.find(filter).sort({createdAt:-1}).skip(page*pagesize).limit(pagesize)
+    .then(async gotAppointments=>{
+        const totalNumbers=await models.Appointment.countDocuments({filter}).lean().exec();
+        const total=Math.ceil(totalNumbers/pagesize);
+        return res.json({status:"success",data:{
+            pagedata:gotAppointments,
+            page,
+            pagesize,
+            totalNumbers,
+            total
+        }})
     })
-    .catch(e=>res.json({status:"error",error:"DB_ERROR"}))
+    .catch(e=>res.json({status:"error",error:e}))
 }
 exports.completeAppointment=(req,res)=>{
     if(!req.userId) return res.json({status:"error",error:"AUTH_ERROR"});

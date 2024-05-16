@@ -7,7 +7,7 @@ router.get('/appointment-types/',appointmentsController.allAppointmentTypes);
 
 router.post('/save',appointmentsController.saveAppointment);
 router.get('/my',appointmentsController.allAppointments)
-router.get('/page',appointmentsController.pageAppointment)
+router.post('/page',appointmentsController.pageAppointment)
 router.put('/:id/accept',appointmentsController.acceptAppointment)
 router.put('/:id/cancel',appointmentsController.cancelAppointment)
 router.get('/:id',appointmentsController.getAppointment)
