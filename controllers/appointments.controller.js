@@ -445,3 +445,99 @@ exports.pageAppointmentEvents=(req,res)=>{
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
+exports.newSaveAppointment=async (req,res)=>{
+    if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
+    const gotAppointmentType=await models.AppointmentType.findById(req.body.appointmenttype);
+    if(!gotAppointmentType) return res.json({status:"error",data:"NO_APPOINTMENTTYPE"});
+    const address=req.body.address;
+    const location=req.body.location;
+    const detail=req.body.detail;
+    const date=new Date(Number(req.body.time));
+    const year=date.getFullYear();
+    const month=date.getMonth();
+    const day=date.getDate();
+    const untilTime=Number(req.body.time)+gotAppointmentType.length;
+
+    const parentEvent=await models.AppointmentEvent.findOne({$and:[{start_date:{$lte:date}},{end_date:{$gte:date}}]}).lean().exec();
+    if(parentEvent.length==0) return res.json({status:"error",error:"NO_EVENT"});
+
+
+    const hour=date.getHours();
+    const minutes=date.getMinutes();
+    const timeNumber=hour+(minutes/60);
+
+    if(timeNumber<parentEvent.start_time|timeNumber>parentEvent.end_time) return res.json({status:"error",error:"NOT_MATCH_TO_EVENT_TIME"});
+
+    const duplicatedAppointments=await models.Appointment.find({from:date}).lean().exec();
+    if(duplicatedAppointments.length>0) return res.json({status:"error",error:"TIME_DUPLICATED"})
+    
+    const newAppointment=new models.Appointment({
+        user:req.userId,
+        type:req.body.appointmenttype,
+        time:date,
+        from:date,
+        to:untilTime,
+        year,
+        month,
+        day,
+        address,
+        location,
+        detail
+    });
+    newAppointment.save()
+    .then((gotAppointment)=>{
+        let defaultClient = brevo.ApiClient.instance;
+        let apiKey = defaultClient.authentications['api-key'];
+        apiKey.apiKey = process.env.BREVO_KEY;
+        let apiInstance = new brevo.TransactionalEmailsApi();
+        let sendSmtpEmail = new brevo.SendSmtpEmail();
+        sendSmtpEmail.subject = "New Appointment Requested from "+req.email;
+        sendSmtpEmail.htmlContent = `
+        <html>
+            <body>
+                <h2>New Appointment Requested from ${req.email}</h2>
+                <h2>The Id of new appointment is ${gotAppointment._id}</h2>
+                <h2>The address of booker is ${req.body.address}</h2>
+                
+                <a href="http://cods.land:3001/" ><h2>Cods.Land-admin</h2></a>
+            </body>
+        </html>`;
+        sendSmtpEmail.sender = { "name": "Cods.Land", "email": "info@cods.land" };
+        sendSmtpEmail.to = [
+
+            {
+                "email": "noierrdev@proton.me", "name": "Vander Moleker"
+            },
+            {
+                "email": "noierrdev@gmail.com", "name": "Vander Moleker"
+            },
+            {
+                "email": "ncrdean@gmail.com", "name": "Dean Howell"
+            },
+            {
+                "email": "dean@cods.land", "name": "Dean Howell"
+            }
+        ];
+        sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };
+        sendSmtpEmail.params = { "parameter": "My param value", "subject": "common subject" };
+
+
+        apiInstance.sendTransacEmail(sendSmtpEmail).then(async function (data) {
+            // return res.json({ status: "success", data: data });
+            return res.json({status:"success",data:data})
+        })
+        // return res.json({status:"success"});
+    })
+    .catch((e)=>res.json({status:"error",error:"SAVE_FAILED"}));
+}
+
+exports.vaildateDate=(req,res)=>{
+    const date=new Date(req.body.date);
+    models.AppointmentEvent.findOne({$and:[{start_date:{$lte:date}},{end_date:{$gte:date}}]})
+    .then(gotEvent=>{
+        if(!gotEvent) return res.json({status:'error',error:"NO_EVENT"});
+        return res.json({status:"success",data:gotEvent});
+    })
+    .catch((e)=>res.json({status:"error",error:e}))
+}
+
