@@ -221,7 +221,7 @@ exports.pageAppointment=(req,res)=>{
             {address:searchFilter}
         ]
     }
-    models.Appointment.find(filter).sort({createdAt:-1}).skip(page*pagesize).limit(pagesize)
+    models.Appointment.find(filter).sort({createdAt:-1}).skip(page*pagesize).limit(pagesize).populate('user','fullname email')
     .then(async gotAppointments=>{
         const totalNumbers=await models.Appointment.countDocuments({filter}).lean().exec();
         const total=Math.ceil(totalNumbers/pagesize);
