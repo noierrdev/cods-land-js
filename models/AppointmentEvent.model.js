@@ -16,17 +16,35 @@ const AppointmentEventSchema=new schema({
         type:Date
     },
     start_time:{
-        type:Date
+        type:Number,
+        min:0,
+        max:24
     },
     end_time:{
-        type:Date
+        type:Number,
+        min:0,
+        max:24
     },
     location:{
         type:String
     },
+    start_dow:{
+        type:Number,
+        min:0,
+        max:6
+    },
+    end_dow:{
+        type:Number,
+        min:0,
+        max:6
+    },
+    repeat:{
+        type:Boolean,
+        default:false
+    }
 },
 {
     timestamps: true,
 });
-const AppointmentEvent=mongoose.model('AppointmentEvent',AppointmentEventSchema)
+const AppointmentEvent=mongoose.model('AppointmentEvent',AppointmentEventSchema);
 module.exports=AppointmentEvent;
