@@ -384,6 +384,64 @@ exports.pageMeetings=(req,res)=>{
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
-exports.meetingsFromRange=(req,res)=>{
-    return res.json(req.body);
+
+exports.saveAppointmentEvent=(req,res)=>{
+    const title=req.body.title;
+    const description=req.body.description;
+    const start_date=req.body.start_date;
+    const end_date=req.body.end_date;
+    const start_time=req.body.start_time;
+    const end_time=req.body.end_time;
+    const newEvent=new models.AppointmentEvent({
+        title,
+        description,
+        start_date,
+        end_date,
+        start_time,
+        end_time,
+        location
+    })
+    newEvent.save()
+    .then((gotEvent)=>{
+        return res.json({status:"success"});
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
+
+exports.deleteAppointmentEvent=(req,res)=>{
+    const id=req.params.id;
+    models.AppointmentEvent.findByIdAndDelete(id)
+    .then(()=>{
+        return res.json({status:"success"})
+    })
+    .catch(()=>res.json({status:"error",error:e}))
+}
+
+exports.pageAppointmentEvents=(req,res)=>{
+    const page=req.body.page;
+    const pagesize=req.body.pagesize;
+    const search=req.body.search;
+    const searchFilter=new RegExp(search,"i");
+    var filter={};
+    if(search) filter={
+        ...filter,
+        $or:[
+            {title:searchFilter},
+            {description:searchFilter},
+            {location:searchFilter}
+        ]
+    }
+    models.AppointmentEvent.find(filter).sort({createdAt:-1}).skip(page*pagesize).limit(pagesize)
+    .then(async gotAppointmentEvents=>{
+        const totalNumbers=await models.AppointmentEvent.countDocuments({filter}).lean().exec();
+        const total=Math.ceil(totalNumbers/pagesize);
+        return res.json({status:"success",data:{
+            pagedata:gotAppointmentEvents,
+            page,
+            pagesize,
+            totalNumbers,
+            total
+        }})
+    })
+    .catch(e=>res.json({status:"error",error:e}))
 }

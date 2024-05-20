@@ -19,6 +19,7 @@ const ProductCategory=require('./ProductCategory.model')
 const Order=require('./Order.model');
 const Subscriber=require("./Subscriber.model");
 const MeetingAppointment=require('./MeetingAppointment.model')
+const AppointmentEvent =require('./AppointmentEvent.model')
 module.exports={
     User,
     Event,
@@ -40,5 +41,6 @@ module.exports={
     ProductCategory,
     Order,
     Subscriber,
-    MeetingAppointment
+    MeetingAppointment,
+    AppointmentEvent
 }
