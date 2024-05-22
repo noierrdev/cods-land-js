@@ -392,6 +392,7 @@ exports.saveAppointmentEvent=(req,res)=>{
     const end_date=req.body.end_date;
     const start_time=req.body.start_time;
     const end_time=req.body.end_time;
+    const location=req.body.location
     const newEvent=new models.AppointmentEvent({
         title,
         description,
