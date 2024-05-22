@@ -33,6 +33,9 @@ const AppointmentEventSchema=new schema({
         min:0,
         max:6
     },
+    phonenumber:{
+        type:String
+    },
     end_dow:{
         type:Number,
         min:0,
