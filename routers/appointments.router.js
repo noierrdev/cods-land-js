@@ -1,7 +1,7 @@
 const router=require('express').Router()
 const appointmentsController=require('../controllers/appointments.controller');
 router.get("/",(req,res)=>res.json({status:"success"}));
-
+router.post('/start-payment',appointmentsController.startPayment)
 router.post('/appointment-types/save',appointmentsController.saveAppointmentType);
 router.get('/appointment-types/',appointmentsController.allAppointmentTypes);
 

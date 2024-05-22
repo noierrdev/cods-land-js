@@ -1,6 +1,6 @@
 const models=require('../models')
 const brevo=require('@getbrevo/brevo');
-
+const stripe=require('stripe')(process.env.STRIPE_KEY)
 
 exports.saveAppointmentType=(req,res)=>{
     // if(!req.userId) return  res.json({status:"error",error:"AUTH_ERROR"});
@@ -542,3 +542,16 @@ exports.vaildateDate=(req,res)=>{
     .catch((e)=>res.json({status:"error",error:e}))
 }
 
+exports.startPayment=async (req,res)=>{
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: req.body.price,
+        currency: 'usd',
+      });
+    
+      return res.send({
+        status:"success",
+        data:{
+            clientSecret: paymentIntent.client_secret,
+        } 
+      });
+}
