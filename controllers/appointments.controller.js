@@ -266,17 +266,7 @@ exports.getFromRange=(req,res)=>{
         const endMonth=endDate.getMonth();
         const endDay=endDate.getDate();
         filter={
-            $and:[
-                {
-                    year:{$gte:startYear,$lte:endYear}
-                },
-                {
-                    month:{$gte:startMonth,$lte:endMonth}
-                },
-                {
-                    day:{$gte:startDay,$lte:endDay}
-                },
-            ]
+            time:{$gte:startDate,$lte:endDate}
         }
     }else if(rangeLength==1){
         const selectedDate=new Date(range[0]);
@@ -392,14 +382,18 @@ exports.saveAppointmentEvent=(req,res)=>{
     const end_date=req.body.end_date;
     const start_time=req.body.start_time;
     const end_time=req.body.end_time;
-    const location=req.body.location
+    const location=req.body.location;
+    const startTimeArray=start_time.split(":");
+    const endTimeArray=end_time.split(":");
+    const startTime=parseInt(startTimeArray[0])+(parseInt(startTimeArray[1])/60);
+    const endTime=parseInt(endTimeArray[0])+(parseInt(endTimeArray[1])/60);
     const newEvent=new models.AppointmentEvent({
         title,
         description,
         start_date,
         end_date,
-        start_time,
-        end_time,
+        start_time:startTime,
+        end_time:endTime,
         location
     })
     newEvent.save()
@@ -554,4 +548,13 @@ exports.startPayment=async (req,res)=>{
             clientSecret: paymentIntent.client_secret,
         } 
       });
+}
+
+exports.getAllFromMonth=(req,res)=>{
+    const year=req.body.year;
+    const month=req.bpdy.month;
+
+    models.Appointment.find({$and:[
+        {year:{}}
+    ]})
 }
