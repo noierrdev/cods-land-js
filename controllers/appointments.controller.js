@@ -375,7 +375,7 @@ exports.pageMeetings=(req,res)=>{
     .catch(e=>res.json({status:"error",error:e}))
 }
 
-exports.saveAppointmentEvent=(req,res)=>{
+exports.saveAppointmentEvent=async (req,res)=>{
     const title=req.body.title;
     const description=req.body.description;
     const start_date=req.body.start_date;
@@ -387,6 +387,11 @@ exports.saveAppointmentEvent=(req,res)=>{
     const endTimeArray=end_time.split(":");
     const startTime=parseInt(startTimeArray[0])+(parseInt(startTimeArray[1])/60);
     const endTime=parseInt(endTimeArray[0])+(parseInt(endTimeArray[1])/60);
+    const duplicatedDates=await models.AppointmentEvent.find({$and:[
+        {start_date:{$lte:start_date}},
+        {end_date:{$gte:start_date}}
+    ]}).lean().exec();
+    if(duplicatedDates.length>0) return res.json({status:"error",error:"DUPLICATED"})
     const newEvent=new models.AppointmentEvent({
         title,
         description,
