@@ -284,6 +284,16 @@ exports.getFromRange=(req,res)=>{
                             end_date:{$lte:endDate}
                         }
                     ]
+                },
+                {
+                    $and:[
+                        {
+                            start_date:{$lte:startDate}
+                        },
+                        {
+                            end_date:{$gte:endDate}
+                        }
+                    ]
                 }
             ]
         }
@@ -351,6 +361,16 @@ exports.getFromRange=(req,res)=>{
                         },
                         {
                             end_date:{$lte:endDate}
+                        }
+                    ]
+                },
+                {
+                    $and:[
+                        {
+                            start_date:{$lte:startDate}
+                        },
+                        {
+                            end_date:{$gte:endDate}
                         }
                     ]
                 }
