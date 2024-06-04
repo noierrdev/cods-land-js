@@ -256,17 +256,36 @@ exports.getFromRange=(req,res)=>{
     const range=req.body.range;
     const rangeLength=range.length;
     var filter={};
+    var eventFilter={}
     if(rangeLength==7){
         const startDate=new Date(range[0]);
-        const startYear=startDate.getFullYear()
-        const startMonth=startDate.getMonth();
-        const startDay=startDate.getDate()
         const endDate=new Date(range[6]);
-        const endYear=endDate.getFullYear()
-        const endMonth=endDate.getMonth();
-        const endDay=endDate.getDate();
         filter={
             time:{$gte:startDate,$lte:endDate}
+        }
+        eventFilter={
+            $or:[
+                {
+                    $and:[
+                        {
+                            start_date:{$gte:startDate}
+                        },
+                        {
+                            start_date:{$lte:endDate}
+                        }
+                    ]
+                },
+                {
+                    $and:[
+                        {
+                            end_date:{$gte:startDate}
+                        },
+                        {
+                            end_date:{$lte:endDate}
+                        }
+                    ]
+                }
+            ]
         }
     }else if(rangeLength==1){
         const selectedDate=new Date(range[0]);
@@ -284,6 +303,14 @@ exports.getFromRange=(req,res)=>{
                 {
                     day:selectedDay
                 },
+            ]
+        }
+        eventFilter={
+            $and:[
+                {
+                    start_date:{$lte:selectedDate},
+                    end_date:{$gte:selectedDate}
+                }
             ]
         }
     }else{
@@ -304,11 +331,36 @@ exports.getFromRange=(req,res)=>{
                     month:{$gte:startMonth,$lte:endMonth}
                 },
             ]
-        }
+        };
+        eventFilter={
+            $or:[
+                {
+                    $and:[
+                        {
+                            start_date:{$gte:startDate}
+                        },
+                        {
+                            start_date:{$lte:endDate}
+                        }
+                    ]
+                },
+                {
+                    $and:[
+                        {
+                            end_date:{$gte:startDate}
+                        },
+                        {
+                            end_date:{$lte:endDate}
+                        }
+                    ]
+                }
+            ]
+        };
     }
     models.Appointment.find(filter).populate("type user","fullname email phonenumber city country title length price")
-    .then(gotAppointments=>{
-        return res.json({status:"success",data:gotAppointments})
+    .then(async gotAppointments=>{
+        const events=await models.AppointmentEvent.find(eventFilter).lean().exec();
+        return res.json({status:"success",data:{appointments:gotAppointments,events:events}})
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
