@@ -450,8 +450,8 @@ exports.pageMeetings=(req,res)=>{
 exports.saveAppointmentEvent=async (req,res)=>{
     const title=req.body.title;
     const description=req.body.description;
-    const start_date=req.body.start_date;
-    const end_date=req.body.end_date;
+    const start_date=new Date(req.body.start_date);
+    const end_date=new Date(req.body.end_date);
     const start_time=req.body.start_time;
     const end_time=req.body.end_time;
     const location=req.body.location;
@@ -459,11 +459,15 @@ exports.saveAppointmentEvent=async (req,res)=>{
     const endTimeArray=end_time.split(":");
     const startTime=parseInt(startTimeArray[0])+(parseInt(startTimeArray[1])/60);
     const endTime=parseInt(endTimeArray[0])+(parseInt(endTimeArray[1])/60);
-    // const duplicatedDates=await models.AppointmentEvent.find({$and:[
-    //     {start_date:{$lte:start_date}},
-    //     {end_date:{$gte:start_date}}
-    // ]}).lean().exec();
-    // if(duplicatedDates.length>0) return res.json({status:"error",error:"DUPLICATED"})
+    const duplicatedDates=await models.AppointmentEvent.find({$or:[
+        {$and:[
+            {start_date:{$gte:start_date,$lte:end_date}},
+        ]},
+        {$and:[
+            {end_date:{$gte:start_date,$lte:end_date}},
+        ]}
+    ]}).lean().exec();
+    if(duplicatedDates.length>0) return res.json({status:"error",error:"DUPLICATED"})
     const newEvent=new models.AppointmentEvent({
         title,
         description,
