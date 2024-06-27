@@ -137,7 +137,9 @@ exports.saveProduct=async (req,res)=>{
     const category_1=req.body.category_1;
     const category_2=req.body.category_2;
     const category_3=req.body.category_3;
-    const video=req.files?req.files.video:null
+    const video=req.files?req.files.video:null;
+    console.log(req.files)
+
     // await getMegaSession(image)
     if(video){
         video.mv(path.resolve(__dirname,"../temp",video.md5),async ()=>{
