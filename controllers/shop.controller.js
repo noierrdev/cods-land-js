@@ -138,7 +138,7 @@ exports.saveProduct=async (req,res)=>{
     const category_2=req.body.category_2;
     const category_3=req.body.category_3;
     const video=req.files?req.files.video:null;
-    console.log(req.files)
+    const images=req.files?req.files.iamges:null;
 
     // await getMegaSession(image)
     if(video){
@@ -158,7 +158,10 @@ exports.saveProduct=async (req,res)=>{
                 }
             });
             newProduct.save()
-            .then(()=>res.json({status:"success"}))
+            .then((savedProduct)=>{
+                console.log(savedProduct)
+                return res.json({status:"success"})
+            })
             .catch(e=>res.json({status:"error",error:e}))
         })
     }else{
@@ -180,7 +183,10 @@ exports.saveProduct=async (req,res)=>{
             count:req.body.count?req.body.count:null
         });
         newProduct.save()
-        .then(()=>res.json({status:"success"}))
+        .then((savedProduct)=>{
+            console.log(savedProduct)
+            return res.json({status:"success"});
+        })
         .catch(e=>res.json({status:"error",error:e}))
     }
     
