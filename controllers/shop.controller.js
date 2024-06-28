@@ -140,7 +140,6 @@ exports.saveProduct=async (req,res)=>{
     const video=req.files?req.files.video:null;
     const images=req.files?req.files.images:null;
 
-    console.log(images)
     // await getMegaSession(image)
     if(video){
         video.mv(path.resolve(__dirname,"../temp",video.md5),async ()=>{
@@ -159,7 +158,7 @@ exports.saveProduct=async (req,res)=>{
                 }
             });
             newProduct.save()
-            .then((savedProduct)=>{
+            .then(async (savedProduct)=>{
                 if(images.length)
                 images.forEach(async (oneProductImage)=>{
                     const newProductImage=new models.ProductImage({
@@ -168,6 +167,13 @@ exports.saveProduct=async (req,res)=>{
                     })
                     await newProductImage.save()
                 })
+                else if(images){
+                    const newProductImage=new models.ProductImage({
+                        product:savedProduct._id,
+                        image:images
+                    })
+                    await newProductImage.save()
+                }
                 return res.json({status:"success"})
             })
             .catch(e=>res.json({status:"error",error:e}))
@@ -191,7 +197,7 @@ exports.saveProduct=async (req,res)=>{
             count:req.body.count?req.body.count:null
         });
         newProduct.save()
-        .then((savedProduct)=>{
+        .then(async (savedProduct)=>{
             if(images.length)
             images.forEach(async (oneProductImage)=>{
                 const newProductImage=new models.ProductImage({
@@ -200,6 +206,13 @@ exports.saveProduct=async (req,res)=>{
                 })
                 await newProductImage.save()
             })
+            else if(images){
+                const newProductImage=new models.ProductImage({
+                    product:savedProduct._id,
+                    image:images
+                })
+                await newProductImage.save()
+            }
             return res.json({status:"success"});
         })
         .catch(e=>res.json({status:"error",error:e}))
