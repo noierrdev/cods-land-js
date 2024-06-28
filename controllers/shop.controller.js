@@ -160,7 +160,7 @@ exports.saveProduct=async (req,res)=>{
             newProduct.save()
             .then((savedProduct)=>{
                 if(images.length)
-                images.forEach(async (oneProductImage)=>{
+                images.map(async (oneProductImage)=>{
                     const newProductImage=new models.ProductImage({
                         product:savedProduct._id,
                         image:oneProductImage
@@ -192,7 +192,7 @@ exports.saveProduct=async (req,res)=>{
         newProduct.save()
         .then((savedProduct)=>{
             if(images.length)
-            images.forEach(async (oneProductImage)=>{
+            images.map(async (oneProductImage)=>{
                 const newProductImage=new models.ProductImage({
                     product:savedProduct._id,
                     image:oneProductImage
