@@ -244,6 +244,14 @@ exports.getProductImage=(req,res)=>{
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
+exports.deleteProductImage=(req,res)=>{
+    const id=req.params.id;
+    models.ProductImage.findByIdAndDelete(id,{image:true})
+    .then(()=>{
+        return res.json({status:"success"});
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
 exports.deleteProduct=(req,res)=>{
     const product=req.params.product_id;
     models.Product.findByIdAndDelete(product)
