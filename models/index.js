@@ -20,6 +20,7 @@ const Order=require('./Order.model');
 const Subscriber=require("./Subscriber.model");
 const MeetingAppointment=require('./MeetingAppointment.model')
 const AppointmentEvent =require('./AppointmentEvent.model')
+const ProductImage=require('./ProductImage.model')
 module.exports={
     User,
     Event,
@@ -42,5 +43,6 @@ module.exports={
     Order,
     Subscriber,
     MeetingAppointment,
-    AppointmentEvent
+    AppointmentEvent,
+    ProductImage
 }
