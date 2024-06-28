@@ -159,7 +159,14 @@ exports.saveProduct=async (req,res)=>{
             });
             newProduct.save()
             .then((savedProduct)=>{
-                console.log(savedProduct)
+                if(images.length)
+                images.forEach(async (oneProductImage)=>{
+                    const newProductImage=new models.ProductImage({
+                        product:savedProduct._id,
+                        image:oneProductImage
+                    })
+                    await newProductImage.save()
+                })
                 return res.json({status:"success"})
             })
             .catch(e=>res.json({status:"error",error:e}))
@@ -184,7 +191,14 @@ exports.saveProduct=async (req,res)=>{
         });
         newProduct.save()
         .then((savedProduct)=>{
-            console.log(savedProduct)
+            if(images.length)
+            images.forEach(async (oneProductImage)=>{
+                const newProductImage=new models.ProductImage({
+                    product:savedProduct._id,
+                    image:oneProductImage
+                })
+                await newProductImage.save()
+            })
             return res.json({status:"success"});
         })
         .catch(e=>res.json({status:"error",error:e}))
