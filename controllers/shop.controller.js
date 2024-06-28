@@ -244,6 +244,19 @@ exports.getProductImage=(req,res)=>{
     })
     .catch(e=>res.json({status:"error",error:e}))
 }
+exports.addProductImage=(req,res)=>{
+    const image=req.files.image;
+    const product=req.body.product;
+    const newProductImage=new models.ProductImage({
+        image:image,
+        product:product
+    });
+    newProductImage.save()
+    .then(()=>{
+        return res.json({status:"success"});
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
 exports.deleteProductImage=(req,res)=>{
     const id=req.params.id;
     models.ProductImage.findByIdAndDelete(id,{image:true})

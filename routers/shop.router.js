@@ -13,6 +13,7 @@ router.post('/categories/:category_id/products/page', shopController.categoryPag
 router.post('/products', shopController.saveProduct);
 router.put('/products', shopController.editProduct);
 router.post('/products/page', shopController.productsPage);
+router.post("/products/images/",shopController.addProductImage)
 router.get("/products/images/:id",shopController.getProductImage)
 router.delete("/products/images/:id",shopController.deleteProductImage)
 router.get('/products/:product_id/image', shopController.productImage)
