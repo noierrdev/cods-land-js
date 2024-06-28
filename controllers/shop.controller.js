@@ -140,6 +140,7 @@ exports.saveProduct=async (req,res)=>{
     const video=req.files?req.files.video:null;
     const images=req.files?req.files.iamges:null;
 
+    console.log(images)
     // await getMegaSession(image)
     if(video){
         video.mv(path.resolve(__dirname,"../temp",video.md5),async ()=>{
@@ -160,7 +161,7 @@ exports.saveProduct=async (req,res)=>{
             newProduct.save()
             .then((savedProduct)=>{
                 if(images.length)
-                images.map(async (oneProductImage)=>{
+                images.forEach(async (oneProductImage)=>{
                     const newProductImage=new models.ProductImage({
                         product:savedProduct._id,
                         image:oneProductImage
@@ -192,7 +193,7 @@ exports.saveProduct=async (req,res)=>{
         newProduct.save()
         .then((savedProduct)=>{
             if(images.length)
-            images.map(async (oneProductImage)=>{
+            images.forEach(async (oneProductImage)=>{
                 const newProductImage=new models.ProductImage({
                     product:savedProduct._id,
                     image:oneProductImage
