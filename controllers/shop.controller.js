@@ -226,7 +226,24 @@ exports.getProduct=(req,res)=>{
     .then(gotProduct=>res.json({status:"success",data:gotProduct}))
     .catch(e=>res.json({status:"error",error:e}))
 }
-
+exports.getProductImages=(req,res)=>{
+    const product=req.params.id;
+    models.ProductImage.find({product:product},{image:false})
+    .then(gotImages=>{
+        if(!gotImages) return res.json({status:'error',error:"NO_IMAGES"})
+        return res.json({status:"success",data:gotImages});
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
+exports.getProductImage=(req,res)=>{
+    const id=req.params.id;
+    models.ProductImage.findById(id,{image:true})
+    .then(gotImage=>{
+        if(!gotImage) return res.json({status:'error',error:"NO_IMAGE"})
+        return res.setHeader("Content-Type",gotImage.image.mimetype).send(gotImage.image.data.buffer);
+    })
+    .catch(e=>res.json({status:"error",error:e}))
+}
 exports.deleteProduct=(req,res)=>{
     const product=req.params.product_id;
     models.Product.findByIdAndDelete(product)
