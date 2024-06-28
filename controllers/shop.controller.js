@@ -138,7 +138,7 @@ exports.saveProduct=async (req,res)=>{
     const category_2=req.body.category_2;
     const category_3=req.body.category_3;
     const video=req.files?req.files.video:null;
-    const images=req.files?req.files.iamges:null;
+    const images=req.files?req.files.images:null;
 
     console.log(images)
     // await getMegaSession(image)
